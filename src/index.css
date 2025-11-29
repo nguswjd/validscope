@@ -1,68 +1,57 @@
+@import "tailwindcss";
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
+
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+  --default-font-family: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  --black: #111111;
+  --white: #ffffff;
 
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+  --blue-1: #e6f2fc;
+  --blue-2: #c2ddf8;
+  --blue-3: #9cc9f5;
+  --blue-4: #77b4f0;
+  --blue-5: #5da4ef;
+  --blue-6: #4896ec;
+  --blue-7: #4188de;
+  --blue-8: #3776cb;
+  --blue-9: #2f66ba;
+  --blue-10: #1f489b;
 
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  --gray-1: #f7f7fb;
+  --gray-2: #dbdbdb;
+  --gray-3: #999999;
+  --gray-4: #505050;
 }
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+@theme inline {
+  --color-background: var(--gray-1);
+
+  --color-black: var(--black);
+  --color-white: var(--white);
+
+  --color-blue-1: var(--blue-1);
+  --color-blue-2: var(--blue-2);
+  --color-blue-3: var(--blue-3);
+  --color-blue-4: var(--blue-4);
+  --color-blue-5: var(--blue-5);
+  --color-blue-6: var(--blue-6);
+  --color-blue-7: var(--blue-7);
+  --color-blue-8: var(--blue-8);
+  --color-blue-9: var(--blue-9);
+  --color-blue-10: var(--blue-10);
+
+  --color-gray-1: var(--gray-1);
+  --color-gray-2: var(--gray-2);
+  --color-gray-3: var(--gray-3);
+  --color-gray-4: var(--gray-4);
 }
 
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
+@layer base {
+  body {
+    @apply bg-background;
   }
 }
