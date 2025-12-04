@@ -7,6 +7,8 @@
     "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 
+  --background: #f7f7fb;
+
   --black: #111111;
   --white: #ffffff;
 
@@ -21,14 +23,18 @@
   --blue-9: #2f66ba;
   --blue-10: #1f489b;
 
-  --gray-1: #f7f7fb;
+  --gray-1: #f7f7f5;
   --gray-2: #dbdbdb;
   --gray-3: #999999;
   --gray-4: #505050;
+
+  --red: #f24949;
+  --green: #64b875;
+  --yellow: #f09436;
 }
 
 @theme inline {
-  --color-background: var(--gray-1);
+  --color-background: var(--background);
 
   --color-black: var(--black);
   --color-white: var(--white);
@@ -48,6 +54,10 @@
   --color-gray-2: var(--gray-2);
   --color-gray-3: var(--gray-3);
   --color-gray-4: var(--gray-4);
+
+  --color-red: var(--red);
+  --color-green: var(--green);
+  --color-yellow: var(--yellow);
 }
 
 @layer base {
