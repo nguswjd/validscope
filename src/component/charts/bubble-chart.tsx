@@ -21,16 +21,23 @@ export default function BubbleChart({ data }: BubbleChartProps) {
   ]);
 
   const option = {
+    title: {
+      text: "Select Bubble for more information",
+      left: "12px",
+      top: "0",
+      textStyle: {
+        fontSize: 12,
+        fontWeight: 300,
+        color: "#111111",
+      },
+    },
     xAxis: {
       name: "gevDovScore",
       nameLocation: "center",
       nameGap: 10,
       nameTextStyle: { color: "#111111", fontSize: 10, fontWeight: 300 },
       type: "value",
-      axisLine: {
-        show: true,
-        lineStyle: { color: "#1f489b", width: 2 },
-      },
+      axisLine: { show: true, lineStyle: { color: "#1f489b", width: 2 } },
       splitLine: { show: false },
       axisLabel: { show: false },
       axisTick: { show: false },
@@ -42,15 +49,11 @@ export default function BubbleChart({ data }: BubbleChartProps) {
       nameRotate: 90,
       nameTextStyle: { color: "#111111", fontSize: 10, fontWeight: 300 },
       type: "value",
-      axisLine: {
-        show: true,
-        lineStyle: { color: "#1f489b", width: 2 },
-      },
+      axisLine: { show: true, lineStyle: { color: "#1f489b", width: 2 } },
       splitLine: { show: false },
       axisLabel: { show: false },
       axisTick: { show: false },
     },
-
     series: [
       {
         type: "scatter",
