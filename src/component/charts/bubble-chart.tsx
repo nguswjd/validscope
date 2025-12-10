@@ -12,6 +12,7 @@ type BubbleChartProps = {
 };
 
 export default function BubbleChart({ data }: BubbleChartProps) {
+  // chartDate 수정필요, 현재 상위에서 데이터를 받아와서 표시해주고 있음
   const chartData = data.map((b) => [
     b.scores.marketBarriers * 2,
     b.scores.profitability * 2,
