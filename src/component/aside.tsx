@@ -61,44 +61,49 @@ export default function Aside() {
         </nav>
       </section>
 
-      <footer className="bg-white h-48 px-5 py-2 flex flex-col justify-around">
-        {/* max 값 수정필요 */}
-        <Slider
-          label="자본"
-          unit={`$${sliderValues.capital}`}
-          value={[sliderValues.capital]}
-          max={100}
-          onValueChange={(val) =>
-            setSliderValues((prev) => ({ ...prev, capital: val[0] }))
-          }
-        />
-        <Slider
-          label="수익"
-          unit={`${sliderValues.revenue}%`}
-          value={[sliderValues.revenue]}
-          max={100}
-          onValueChange={(val) =>
-            setSliderValues((prev) => ({ ...prev, revenue: val[0] }))
-          }
-        />
-        <Slider
-          label="안정성"
-          unit={`${sliderValues.stability}%`}
-          value={[sliderValues.stability]}
-          max={100}
-          onValueChange={(val) =>
-            setSliderValues((prev) => ({ ...prev, stability: val[0] }))
-          }
-        />
-        <Slider
-          label="진입장벽"
-          unit={`${sliderValues.marketBarriers}%`}
-          value={[sliderValues.marketBarriers]}
-          max={100}
-          onValueChange={(val) =>
-            setSliderValues((prev) => ({ ...prev, marketBarriers: val[0] }))
-          }
-        />
+      <footer className="bg-white h-48 px-5 py-2 flex gap-5 justify-around">
+        <div className="grid gird-cols-1 w-full items-center">
+          {/* max 값 수정필요 */}
+          <Slider
+            label="자본"
+            unit={`$${sliderValues.capital}`}
+            value={[sliderValues.capital]}
+            max={100}
+            onValueChange={(val) =>
+              setSliderValues((prev) => ({ ...prev, capital: val[0] }))
+            }
+          />
+          <Slider
+            label="수익"
+            unit={`${sliderValues.revenue}%`}
+            value={[sliderValues.revenue]}
+            max={100}
+            onValueChange={(val) =>
+              setSliderValues((prev) => ({ ...prev, revenue: val[0] }))
+            }
+          />
+          <Slider
+            label="안정성"
+            unit={`${sliderValues.stability}%`}
+            value={[sliderValues.stability]}
+            max={100}
+            onValueChange={(val) =>
+              setSliderValues((prev) => ({ ...prev, stability: val[0] }))
+            }
+          />
+          <Slider
+            label="진입장벽"
+            unit={`${sliderValues.marketBarriers}%`}
+            value={[sliderValues.marketBarriers]}
+            max={100}
+            onValueChange={(val) =>
+              setSliderValues((prev) => ({ ...prev, marketBarriers: val[0] }))
+            }
+          />
+        </div>
+        <button className="bg-blue-6 px-5 py-2 text-white font-semibold text-base">
+          Find
+        </button>
       </footer>
     </aside>
   );
