@@ -2,9 +2,6 @@
 
 @import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css");
 @import "tw-animate-css";
-@plugin "tailwindcss-animate";
-
-@custom-variant dark (&:is(.dark *));
 
 :root {
   --default-font-family: "Pretendard Variable", Pretendard, -apple-system,
