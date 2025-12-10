@@ -14,6 +14,70 @@ export default function Aside() {
       name: "COSMOS HUB",
       scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
     },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
   ];
 
   const [selected, setSelected] = useState<string[]>([]);
@@ -34,7 +98,7 @@ export default function Aside() {
         <span className="text-gray-4 text-base font-light">Select the bar</span>
       </header>
 
-      <section className="flex-1 overflow-y-auto border-y-2 border-gray-2 p-4">
+      <section className="flex-1 overflow-y-auto border-y-2 border-gray-2 p-4 hide-scrollbar">
         <h2 className="hidden">바 차트 네비게이션</h2>
         <nav>
           <ul className="flex flex-col gap-2">

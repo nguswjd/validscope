@@ -84,5 +84,9 @@
     .bg-graph-gradient {
       background: var(--graph-gradient);
     }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
