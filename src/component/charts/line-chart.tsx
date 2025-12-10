@@ -52,6 +52,7 @@ function LineChart({ data }: LineChartProps) {
     grid: { left: 40, right: 40, top: 40, bottom: 40 },
     xAxis: {
       type: "category",
+      boundaryGap: false,
       data: xAxisData,
       axisLine: { show: true, lineStyle: { color: "#1f489b", width: 2 } },
       axisTick: { show: false },

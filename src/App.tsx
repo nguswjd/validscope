@@ -58,7 +58,7 @@ export default function App() {
               data={[
                 {
                   name: "COSMOS HUB",
-                  value: [4, 3, 1, 2, 3],
+                  value: [4, 3, 1, 2, 3, 1, 2],
                 },
               ]}
             />
