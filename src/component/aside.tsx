@@ -9,11 +9,23 @@ type Scores = {
   profitability: number;
 };
 
-export default function Aside() {
+type AsideProps = {
+  onSelect: (selected: { name: string; scores: Scores }[]) => void;
+};
+
+export default function Aside({ onSelect }: AsideProps) {
   const blockchains: { name: string; scores: Scores }[] = [
     {
       name: "COSMOS HUB",
       scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
+    },
+    {
+      name: "ETHEREUM",
+      scores: { marketBarriers: 25, networkGovernance: 35, profitability: 15 },
+    },
+    {
+      name: "BITCOIN",
+      scores: { marketBarriers: 30, networkGovernance: 40, profitability: 20 },
     },
   ];
 
@@ -26,9 +38,11 @@ export default function Aside() {
   });
 
   const handleToggle = (name: string) => {
-    setSelected((prev) =>
-      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
-    );
+    const newSelected = selected.includes(name)
+      ? selected.filter((n) => n !== name)
+      : [...selected, name];
+    setSelected(newSelected);
+    onSelect(blockchains.filter((b) => newSelected.includes(b.name)));
   };
 
   return (
@@ -40,9 +54,7 @@ export default function Aside() {
         <h2 className="text-xl text-black">Top Recommendations</h2>
         <span className="text-gray-4 text-base font-light">Select the bar</span>
       </header>
-
       <section className="flex-1 overflow-y-auto border-y-2 border-gray-2 p-4 hide-scrollbar">
-        <h2 className="hidden">바 차트 네비게이션</h2>
         <nav>
           <ul className="flex flex-col gap-2">
             {blockchains.map((item, idx) => (
@@ -60,10 +72,8 @@ export default function Aside() {
           </ul>
         </nav>
       </section>
-
       <footer className="bg-white h-48 px-5 py-2 flex gap-5 justify-around">
         <div className="grid gird-cols-1 w-full items-center">
-          {/* max 값 수정필요 */}
           <Slider
             label="자본"
             unit={`$${sliderValues.capital}`}
