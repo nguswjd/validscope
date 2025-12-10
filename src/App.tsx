@@ -64,7 +64,20 @@ export default function App() {
             />
           </Contents>
           <Contents label="Ratio between elements" className="w-[40%]">
-            <PieChart />
+            <PieChart
+              data={[
+                {
+                  name: "COSMOS HUB",
+                  scores: {
+                    marketBarriers: 20,
+                    influence: 20,
+                    networkGovernance: 20,
+                    networkHealth: 30,
+                    profitability: 10,
+                  },
+                },
+              ]}
+            />
           </Contents>
         </div>
       </main>
