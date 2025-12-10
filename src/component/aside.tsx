@@ -101,7 +101,7 @@ export default function Aside() {
             }
           />
         </div>
-        <button className="bg-blue-6 px-5 py-2 text-white font-semibold text-base">
+        <button className="bg-blue-6 cursor-pointer rounded-sm px-5 py-2 text-white font-semibold text-base">
           Find
         </button>
       </footer>
