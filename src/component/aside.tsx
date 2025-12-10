@@ -1,5 +1,7 @@
 import { useState } from "react";
+
 import LogoImage from "../assets/logo.svg";
+
 import BlockchainBtn from "./blockchain-btn";
 import { Slider } from "./ui/slider";
 
@@ -20,11 +22,11 @@ export default function Aside({ onSelect }: AsideProps) {
       scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
     },
     {
-      name: "ETHEREUM",
+      name: "ATOMONE",
       scores: { marketBarriers: 25, networkGovernance: 35, profitability: 15 },
     },
     {
-      name: "BITCOIN",
+      name: "OSMOSIS",
       scores: { marketBarriers: 30, networkGovernance: 40, profitability: 20 },
     },
   ];

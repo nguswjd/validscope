@@ -1,7 +1,11 @@
 import cosmosHubImg from "../assets/blockchains/cosmos_hub.png";
+import osmosisImg from "../assets/blockchains/osmosis.png";
+import atomoneImg from "../assets/blockchains/atomone.png";
 
 const blockchainImages: Record<string, string> = {
   "COSMOS HUB": cosmosHubImg,
+  ATOMONE: atomoneImg,
+  OSMOSIS: osmosisImg,
 };
 
 type Scores = {
