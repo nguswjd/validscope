@@ -31,6 +31,7 @@ export default function BubbleChart({ data }: BubbleChartProps) {
         color: "#111111",
       },
     },
+    grid: { left: 40, right: 40, top: 40, bottom: 40 },
     xAxis: {
       name: "gevDovScore",
       nameLocation: "center",

@@ -14,6 +14,7 @@ function RadarChart({ data }: RadarChartProps) {
   const option = {
     radar: {
       shape: "circle",
+      radius: "70%",
       indicator: [
         { name: "진입장벽", max: 6500 },
         { name: "영향력", max: 16000 },
@@ -33,9 +34,7 @@ function RadarChart({ data }: RadarChartProps) {
           name: item.name,
           value: item.value,
           lineStyle: { width: 2, color: item.color },
-          areaStyle: {
-            color: item.color + "40",
-          },
+          areaStyle: { color: item.color + "40" },
           symbol: "circle",
           symbolSize: 6,
           itemStyle: {
@@ -49,7 +48,7 @@ function RadarChart({ data }: RadarChartProps) {
   };
 
   return (
-    <ReactECharts option={option} style={{ height: "400px", width: "100%" }} />
+    <ReactECharts option={option} style={{ width: "100%", height: "100%" }} />
   );
 }
 
