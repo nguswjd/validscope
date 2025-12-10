@@ -2,35 +2,50 @@ import ReactECharts from "echarts-for-react";
 
 function RadarChart() {
   const option = {
-    title: {
-      text: "Basic Radar Chart",
-    },
-    legend: {
-      data: ["Allocated Budget", "Actual Spending"],
-    },
     radar: {
-      // shape: 'circle',
+      shape: "circle",
       indicator: [
-        { name: "Sales", max: 6500 },
-        { name: "Administration", max: 16000 },
-        { name: "Information Technology", max: 30000 },
-        { name: "Customer Support", max: 38000 },
-        { name: "Development", max: 52000 },
-        { name: "Marketing", max: 25000 },
+        { name: "진입장벽", max: 6500 },
+        { name: "영향력", max: 16000 },
+        { name: "네트워크 난이도", max: 30000 },
+        { name: "거버넌스", max: 38000 },
+        { name: "수익성", max: 52000 },
       ],
+      axisName: {
+        fontWeight: 400,
+        fontSize: 11,
+        color: "#111111",
+      },
+      splitLine: {
+        lineStyle: {
+          color: "#c2ddf8",
+          width: 1,
+        },
+      },
+      splitArea: {
+        show: false,
+      },
+      axisLine: {
+        lineStyle: {
+          color: "#c2ddf8",
+        },
+      },
     },
     series: [
       {
-        name: "Budget vs spending",
         type: "radar",
         data: [
           {
-            value: [4200, 3000, 20000, 35000, 50000, 18000],
+            value: [4200, 3000, 20000, 35000, 50000],
             name: "Allocated Budget",
+            lineStyle: { width: 2 },
+            areaStyle: { opacity: 0 },
           },
           {
-            value: [5000, 14000, 28000, 26000, 42000, 21000],
+            value: [5000, 14000, 28000, 26000, 42000],
             name: "Actual Spending",
+            lineStyle: { width: 2 },
+            areaStyle: { opacity: 0 },
           },
         ],
       },
