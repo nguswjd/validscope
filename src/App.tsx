@@ -54,7 +54,14 @@ export default function App() {
             label="Normal distribution table for [blockchain]"
             className="w-full"
           >
-            <LineChart />
+            <LineChart
+              data={[
+                {
+                  name: "COSMOS HUB",
+                  value: [4, 3, 1, 2, 3],
+                },
+              ]}
+            />
           </Contents>
           <Contents label="Ratio between elements" className="w-[40%]">
             <PieChart />
