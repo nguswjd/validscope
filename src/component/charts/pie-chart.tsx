@@ -1,13 +1,11 @@
+import ReactECharts from "echarts-for-react";
+
 type Scores = {
-  // 진입장벽
+  // 진입장벽, 영향력, 거버넌스, 네트워크 건강도, 수익성
   marketBarriers: number;
-  // 영향력
   influence: number;
-  // 네트워크 난이도, 거버넌스
   networkGovernance: number;
-  // 네트워크 건강도
   networkHealth: number;
-  // 수익성
   profitability: number;
 };
 
@@ -18,28 +16,34 @@ type PieChartProps = {
   }[];
 };
 
-import ReactECharts from "echarts-for-react";
-
-function PieChart({ data }: PieChartProps) {
+export default function PieChart({ data }: PieChartProps) {
   if (!data || data.length === 0) return null;
 
   const chartData = [
-    { name: "진입장벽", value: data[0].scores.marketBarriers },
-    { name: "영향력", value: data[0].scores.influence },
+    {
+      name: "진입장벽",
+      value: data[0].scores.marketBarriers,
+      color: "#c2ddf8",
+    },
+    { name: "영향력", value: data[0].scores.influence, color: "#77b4f0" },
     {
       name: "거버넌스",
       value: data[0].scores.networkGovernance,
+      color: "#4896ec",
     },
     {
       name: "네트워크 건강도",
       value: data[0].scores.networkHealth,
+      color: "#3776cb",
     },
-    { name: "수익성", value: data[0].scores.profitability },
+    { name: "수익성", value: data[0].scores.profitability, color: "#1f489b" },
   ];
 
+  const total = chartData.reduce((sum, item) => sum + item.value, 0);
+
   const option = {
-    tooltip: { trigger: "item" },
-    legend: { top: "5%", left: "center" },
+    tooltip: { show: false },
+    legend: { show: false },
     series: [
       {
         name: data[0].name,
@@ -47,17 +51,55 @@ function PieChart({ data }: PieChartProps) {
         radius: ["40%", "70%"],
         avoidLabelOverlap: false,
         itemStyle: { borderRadius: 10, borderColor: "#fff", borderWidth: 2 },
-        label: { show: false, position: "center" },
-        emphasis: { label: { show: true, fontSize: 20, fontWeight: "bold" } },
+        label: { show: false },
+        emphasis: { label: { show: false } },
         labelLine: { show: false },
-        data: chartData,
+        silent: true,
+        data: chartData.map((item) => ({
+          name: item.name,
+          value: item.value,
+          itemStyle: { color: item.color },
+        })),
       },
     ],
   };
 
   return (
-    <ReactECharts option={option} style={{ height: "400px", width: "100%" }} />
+    <div>
+      <ReactECharts
+        option={option}
+        style={{ height: "300px", width: "100%" }}
+      />
+      <div className="flex flex-col gap-3">
+        {" "}
+        {chartData.map((item) => {
+          const percent = ((item.value / total) * 100).toFixed(0) + "%";
+          const borderClass =
+            item.name === "영향력" || item.name === "네트워크 건강도"
+              ? "border-b border-gray-300 pb-2"
+              : "";
+
+          return (
+            <div
+              key={item.name}
+              className={`flex justify-between mx-10 ${borderClass}`}
+            >
+              <div className="flex items-center">
+                <span
+                  className="w-1.5 h-1.5 rounded-full inline-block mr-2"
+                  style={{ backgroundColor: item.color }}
+                />
+                <span className="text-sm font-light text-black">
+                  {item.name}
+                </span>
+              </div>
+              <span className="text-sm text-black font-normal ml-2">
+                {percent}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
   );
 }
-
-export default PieChart;
