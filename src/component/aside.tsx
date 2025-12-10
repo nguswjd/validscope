@@ -1,17 +1,28 @@
+import { useState } from "react";
 import LogoImage from "../assets/logo.svg";
 import BlockchainBtn from "./blockchain-btn";
 
-function Aside() {
-  const recommendations = [
+type Scores = {
+  marketBarriers: number;
+  networkGovernance: number;
+  profitability: number;
+};
+
+export default function Aside() {
+  const recommendations: { name: string; scores: Scores }[] = [
     {
-      name: "Bitcoin",
-      scores: {
-        marketBarriers: 20,
-        networkGovernance: 30,
-        profitability: 10,
-      },
+      name: "COSMOS HUB",
+      scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
     },
   ];
+
+  const [selected, setSelected] = useState<string[]>([]);
+
+  const handleToggle = (name: string) => {
+    setSelected((prev) =>
+      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+    );
+  };
 
   return (
     <aside className="w-[29.37vw] max-w-111 h-screen border-r-2 border-gray-2 flex flex-col">
@@ -19,7 +30,6 @@ function Aside() {
         <h1>
           <img src={LogoImage} alt="Validscope 로고" className="max-h-11" />
         </h1>
-
         <h2 className="text-xl text-black">Top Recommendations</h2>
         <span className="text-gray-4 text-base font-light">Select the bar</span>
       </header>
@@ -31,7 +41,13 @@ function Aside() {
             {recommendations.map((item, idx) => (
               <li key={idx} className="flex items-center">
                 <p className="w-5 text-center text-black">{idx + 1}</p>
-                <BlockchainBtn name={item.name} scores={item.scores} />
+                <BlockchainBtn
+                  name={item.name}
+                  scores={item.scores}
+                  onClick={() => handleToggle(item.name)}
+                  isSelected={selected.includes(item.name)}
+                  selectedLength={selected.length}
+                />
               </li>
             ))}
           </ul>
@@ -42,5 +58,3 @@ function Aside() {
     </aside>
   );
 }
-
-export default Aside;
