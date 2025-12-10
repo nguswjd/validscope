@@ -9,7 +9,7 @@ type Scores = {
 };
 
 export default function Aside() {
-  const recommendations: { name: string; scores: Scores }[] = [
+  const blockchains: { name: string; scores: Scores }[] = [
     {
       name: "COSMOS HUB",
       scores: { marketBarriers: 20, networkGovernance: 30, profitability: 10 },
@@ -38,7 +38,7 @@ export default function Aside() {
         <h2 className="hidden">바 차트 네비게이션</h2>
         <nav>
           <ul className="flex flex-col gap-2">
-            {recommendations.map((item, idx) => (
+            {blockchains.map((item, idx) => (
               <li key={idx} className="flex items-center">
                 <p className="w-5 text-center text-black">{idx + 1}</p>
                 <BlockchainBtn
