@@ -1,6 +1,7 @@
 import { useState } from "react";
 import LogoImage from "../assets/logo.svg";
 import BlockchainBtn from "./blockchain-btn";
+import { Slider } from "./ui/slider";
 
 type Scores = {
   marketBarriers: number;
@@ -17,6 +18,12 @@ export default function Aside() {
   ];
 
   const [selected, setSelected] = useState<string[]>([]);
+  const [sliderValues, setSliderValues] = useState({
+    capital: 50,
+    revenue: 50,
+    stability: 50,
+    marketBarriers: 50,
+  });
 
   const handleToggle = (name: string) => {
     setSelected((prev) =>
@@ -54,7 +61,45 @@ export default function Aside() {
         </nav>
       </section>
 
-      <footer className="bg-white h-48">자본, 수익, 안정성, 진입장벽</footer>
+      <footer className="bg-white h-48 px-5 py-2 flex flex-col justify-around">
+        {/* max 값 수정필요 */}
+        <Slider
+          label="자본"
+          unit={`$${sliderValues.capital}`}
+          value={[sliderValues.capital]}
+          max={100}
+          onValueChange={(val) =>
+            setSliderValues((prev) => ({ ...prev, capital: val[0] }))
+          }
+        />
+        <Slider
+          label="수익"
+          unit={`${sliderValues.revenue}%`}
+          value={[sliderValues.revenue]}
+          max={100}
+          onValueChange={(val) =>
+            setSliderValues((prev) => ({ ...prev, revenue: val[0] }))
+          }
+        />
+        <Slider
+          label="안정성"
+          unit={`${sliderValues.stability}%`}
+          value={[sliderValues.stability]}
+          max={100}
+          onValueChange={(val) =>
+            setSliderValues((prev) => ({ ...prev, stability: val[0] }))
+          }
+        />
+        <Slider
+          label="진입장벽"
+          unit={`${sliderValues.marketBarriers}%`}
+          value={[sliderValues.marketBarriers]}
+          max={100}
+          onValueChange={(val) =>
+            setSliderValues((prev) => ({ ...prev, marketBarriers: val[0] }))
+          }
+        />
+      </footer>
     </aside>
   );
 }
