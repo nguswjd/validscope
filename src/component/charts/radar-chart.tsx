@@ -1,6 +1,16 @@
 import ReactECharts from "echarts-for-react";
 
-function RadarChart() {
+type RadarData = {
+  name: string;
+  value: number[];
+  color: string;
+};
+
+type RadarChartProps = {
+  data: RadarData[];
+};
+
+function RadarChart({ data }: RadarChartProps) {
   const option = {
     radar: {
       shape: "circle",
@@ -11,43 +21,29 @@ function RadarChart() {
         { name: "거버넌스", max: 38000 },
         { name: "수익성", max: 52000 },
       ],
-      axisName: {
-        fontWeight: 400,
-        fontSize: 11,
-        color: "#111111",
-      },
-      splitLine: {
-        lineStyle: {
-          color: "#c2ddf8",
-          width: 1,
-        },
-      },
-      splitArea: {
-        show: false,
-      },
-      axisLine: {
-        lineStyle: {
-          color: "#c2ddf8",
-        },
-      },
+      axisName: { fontWeight: 400, fontSize: 11, color: "#111111" },
+      splitLine: { lineStyle: { color: "#c2ddf8", width: 1 } },
+      splitArea: { show: false },
+      axisLine: { lineStyle: { color: "#c2ddf8" } },
     },
     series: [
       {
         type: "radar",
-        data: [
-          {
-            value: [4200, 3000, 20000, 35000, 50000],
-            name: "Allocated Budget",
-            lineStyle: { width: 2 },
-            areaStyle: { opacity: 0 },
+        data: data.map((item) => ({
+          name: item.name,
+          value: item.value,
+          lineStyle: { width: 2, color: item.color },
+          areaStyle: {
+            color: item.color + "40",
           },
-          {
-            value: [5000, 14000, 28000, 26000, 42000],
-            name: "Actual Spending",
-            lineStyle: { width: 2 },
-            areaStyle: { opacity: 0 },
+          symbol: "circle",
+          symbolSize: 6,
+          itemStyle: {
+            color: "#ffffff",
+            borderColor: item.color,
+            borderWidth: 2,
           },
-        ],
+        })),
       },
     ],
   };

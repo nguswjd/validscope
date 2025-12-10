@@ -28,7 +28,25 @@ export default function App() {
             <BubbleChart data={selectedBlockchains} />
           </Contents>
           <Contents label="Comparison between elements" className="w-[60%]">
-            <RadarChart />
+            <RadarChart
+              data={[
+                {
+                  name: "COSMOS HUB",
+                  value: [4200, 3000, 20000, 35000, 50000],
+                  color: "#f24949",
+                },
+                {
+                  name: "ATOMONE",
+                  value: [5000, 14000, 28000, 26000, 42000],
+                  color: "#64b875",
+                },
+                {
+                  name: "OSMOSIS",
+                  value: [500, 1400, 30000, 6000, 21000],
+                  color: "#f09436",
+                },
+              ]}
+            />
           </Contents>
         </div>
         <div className="flex h-full gap-5">
