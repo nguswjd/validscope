@@ -20,7 +20,10 @@ const Slider = React.forwardRef<
 
     <SliderPrimitive.Root
       ref={ref}
-      className={cn("relative flex w-full items-center", className)}
+      className={cn(
+        "relative flex w-full items-center cursor-pointer ",
+        className
+      )}
       {...props}
     >
       <SliderPrimitive.Track className="relative h-1 w-full grow overflow-hidden rounded-full bg-blue-1">
