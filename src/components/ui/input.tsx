@@ -68,7 +68,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
         />
 
         {isNumber && (
-          <span className="absolute right-8 top-1/2 -translate-y-1/2 text-sm text-gray-3">
+          <span className="absolute left-10 top-1/2 -translate-y-1/2 text-sm text-gray-3">
             %
           </span>
         )}
