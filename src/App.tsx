@@ -22,12 +22,21 @@ export default function App() {
   return (
     <div className="flex h-screen w-screen">
       <Aside onSelect={(blockchains) => setSelectedBlockchains(blockchains)} />
-      <main className="flex flex-col gap-5 p-5 w-full">
+      <main className="flex flex-col gap-5 p-5 ml-[33vw] flex-1 overflow-auto">
         <div className="flex h-full gap-5">
-          <Contents label="Bubble chart for blockchains" className="w-full">
+          <Contents
+            label="Bubble chart for blockchains"
+            className="w-full"
+            description="검증인이 되기 유리한 조건을 가진 블록체인 지도이다.
+            오른쪽 위, 크기가 큰 체인일수록 검증인이 되기 쉽다."
+          >
             <BubbleChart data={selectedBlockchains} />
           </Contents>
-          <Contents label="Comparison between elements" className="w-[60%]">
+          <Contents
+            label="Comparison between elements"
+            className="w-[60%]"
+            description="블록체인 간, 각 지표별 점수의 차이를 비교할 수 있다."
+          >
             <RadarChart
               data={[
                 {
@@ -53,6 +62,8 @@ export default function App() {
           <Contents
             label="Normal distribution table for [blockchain]"
             className="w-full"
+            description="각 지표별 상대 점수를 정규분표로 도식화하였다. 
+              왼쪽에 가까울수록 부정적, 오른쪽에 가까울수록 긍정적으로 주목할 수 있는 지표이다."
           >
             <LineChart
               data={[
@@ -63,7 +74,11 @@ export default function App() {
               ]}
             />
           </Contents>
-          <Contents label="Ratio between elements" className="w-[40%]">
+          <Contents
+            label="Ratio between elements"
+            className="w-[40%]"
+            description="당신이 선택한 가중치에 따른 점수의 비율이다."
+          >
             <PieChart
               data={[
                 {
