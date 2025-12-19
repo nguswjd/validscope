@@ -1,3 +1,4 @@
+import { useState } from "react";
 import ReactECharts from "echarts-for-react";
 import * as echarts from "echarts";
 
@@ -11,6 +12,20 @@ type BubbleChartProps = {
   data: { name: string; scores: Scores }[];
 };
 
+type BubbleChartHintProps = {
+  label: string;
+  value: string | number;
+};
+
+function BubbleChartHint({ label, value }: BubbleChartHintProps) {
+  return (
+    <div className="h-9 border border-gray-2 text-gray-2 flex justify-between items-center px-2 py-3 rounded-sm">
+      <p className="font-light text-[10px] text-black">{label}</p>
+      <span className="text-blue-8">{value}</span>
+    </div>
+  );
+}
+
 export default function BubbleChart({ data }: BubbleChartProps) {
   // chartDate 수정필요, 현재 상위에서 데이터를 받아와서 표시해주고 있음
   const chartData = data.map((b) => [
@@ -19,6 +34,12 @@ export default function BubbleChart({ data }: BubbleChartProps) {
     b.scores.networkGovernance * 50,
     b.name,
   ]);
+
+  const [hintValues, setHintValues] = useState({
+    x: "00",
+    y: "00",
+    bubble: "00",
+  });
 
   const option = {
     title: {
@@ -73,11 +94,37 @@ export default function BubbleChart({ data }: BubbleChartProps) {
     ],
   };
 
+  const onEvents = {
+    mouseover: (params: any) => {
+      if (!params?.data) return;
+      const [x, y, bubble] = params.data;
+      setHintValues({
+        x: x.toFixed(0),
+        y: y.toFixed(0),
+        bubble: bubble.toFixed(0),
+      });
+    },
+    mouseout: () => {
+      setHintValues({ x: "00", y: "00", bubble: "00" });
+    },
+  };
+
   return (
-    <ReactECharts
-      echarts={echarts}
-      option={option}
-      style={{ height: "100%", width: "100%" }}
-    />
+    <div className="h-full">
+      <ReactECharts
+        echarts={echarts}
+        option={option}
+        onEvents={onEvents}
+        style={{ height: "320px", width: "100%" }}
+      />
+      <div className="grid grid-cols-3 mx-10 gap-3">
+        <BubbleChartHint label="X-axis : gevDov Score" value={hintValues.x} />
+        <BubbleChartHint label="Y-axis : Health Score" value={hintValues.y} />
+        <BubbleChartHint
+          label="Bubble Scale : Influence Score"
+          value={hintValues.bubble}
+        />
+      </div>
+    </div>
   );
 }

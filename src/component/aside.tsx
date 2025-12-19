@@ -204,7 +204,7 @@ export default function Aside({ onSelect }: AsideProps) {
     onSelect(blockchains.filter((b) => newSelected.includes(b.name)));
   };
   return (
-    <aside className="w-[33vw] min-w-111 h-dvh border-r-2 border-gray-2 flex flex-col fixed left-0 top-0 z-10 bg-white">
+    <aside className="w-111 h-dvh border-r-2 border-gray-2 flex flex-col fixed left-0 top-0 z-10 bg-white">
       <header className="bg-white px-4 pt-4 pb-3 flex flex-col justify-between w-full gap-2">
         <h1>
           <img src={LogoImage} alt="Validscope 로고" className="max-w-42.5" />

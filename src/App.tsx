@@ -20,14 +20,23 @@ export default function App() {
   >([]);
 
   return (
-    <div className="flex h-screen w-screen">
-      <Aside onSelect={(blockchains) => setSelectedBlockchains(blockchains)} />
-      <main className="flex flex-col gap-5 p-5 w-full">
-        <div className="flex h-full gap-5">
-          <Contents label="Bubble chart for blockchains" className="w-full">
+    <div className="w-screen">
+      <Aside onSelect={setSelectedBlockchains} />
+      <main className="ml-111 flex flex-col gap-5 p-5">
+        <div className="flex h-110 gap-5">
+          <Contents
+            label="Bubble chart for blockchains"
+            className="min-w-158 w-full"
+            description="검증인이 되기 유리한 조건을 가진 블록체인 지도이다.
+            오른쪽 위, 크기가 큰 체인일수록 검증인이 되기 쉽다."
+          >
             <BubbleChart data={selectedBlockchains} />
           </Contents>
-          <Contents label="Comparison between elements" className="w-[60%]">
+          <Contents
+            label="Comparison between elements"
+            className="min-w-94 w-[60%]"
+            description="블록체인 간, 각 지표별 점수의 차이를 비교할 수 있다."
+          >
             <RadarChart
               data={[
                 {
@@ -49,21 +58,16 @@ export default function App() {
             />
           </Contents>
         </div>
-        <div className="flex h-full gap-5">
+        <div className="flex h-102 min-w-5xl w-full gap-5">
           <Contents
-            label="Normal distribution table for [blockchain]"
-            className="w-full"
+            variant="twochart"
+            label="Ratio between elements"
+            label2="Normal distribution table for [blockchain]"
+            className="w-[40%]"
+            description="당신이 선택한 가중치에 따른 점수의 비율이다."
+            description2="각 지표별 상대 점수를 정규분표로 도식화하였다.
+              왼쪽에 가까울수록 부정적, 오른쪽에 가까울수록 긍정적으로 주목할 수 있는 지표이다."
           >
-            <LineChart
-              data={[
-                {
-                  name: "COSMOS HUB",
-                  value: [4, 3, 1, 2, 3, 1, 2],
-                },
-              ]}
-            />
-          </Contents>
-          <Contents label="Ratio between elements" className="w-[40%]">
             <PieChart
               data={[
                 {
@@ -75,6 +79,15 @@ export default function App() {
                     networkHealth: 30,
                     profitability: 10,
                   },
+                },
+              ]}
+            />
+
+            <LineChart
+              data={[
+                {
+                  name: "COSMOS HUB",
+                  value: [4, 3, 1, 2, 3, 1, 2],
                 },
               ]}
             />
