@@ -7,7 +7,6 @@ interface ProgressBarProps {
   label?: React.ReactNode;
   /** 'percent' | 'dollar' | 'score' */
   variant?: "percent" | "dollar" | "score";
-  maxScore?: number; // score variant용
   className?: string;
 }
 
@@ -17,7 +16,6 @@ export default function ProgressBar({
   showLabel = true,
   label,
   variant = "percent",
-  maxScore = 100,
   className = "",
 }: ProgressBarProps) {
   const safeValue = Math.min(100, Math.max(0, value));
