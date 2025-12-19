@@ -10,6 +10,8 @@ type Scores = {
 
 type BubbleChartProps = {
   data: { name: string; scores: Scores }[];
+  onSelectBlockchain: (name: string) => void;
+  selectedBlockchains: { name: string; scores: Scores }[];
 };
 
 type BubbleChartHintProps = {
@@ -26,14 +28,36 @@ function BubbleChartHint({ label, value }: BubbleChartHintProps) {
   );
 }
 
-export default function BubbleChart({ data }: BubbleChartProps) {
-  // chartDate 수정필요, 현재 상위에서 데이터를 받아와서 표시해주고 있음
-  const chartData = data.map((b) => [
-    b.scores.marketBarriers * 2,
-    b.scores.profitability * 2,
-    b.scores.networkGovernance * 50,
-    b.name,
-  ]);
+export default function BubbleChart({
+  data,
+  onSelectBlockchain,
+  selectedBlockchains,
+}: BubbleChartProps) {
+  const colors = ["#5da4ef", "#64b875", "#785bbc", "#f24949"];
+
+  const chartData = data.map((b) => {
+    const selectedIndex = selectedBlockchains.findIndex(
+      (selected) => selected.name === b.name
+    );
+    let color;
+
+    if (selectedBlockchains.length === 0) {
+      color = "#5da4ef";
+    } else {
+      color =
+        selectedIndex !== -1
+          ? colors[selectedIndex]
+          : "rgba(93, 164, 239, 0.3)";
+    }
+
+    return [
+      b.scores.marketBarriers * 2,
+      b.scores.profitability * 2,
+      b.scores.networkGovernance * 50,
+      b.name,
+      color,
+    ];
+  });
 
   const [hintValues, setHintValues] = useState({
     x: "00",
@@ -80,7 +104,7 @@ export default function BubbleChart({ data }: BubbleChartProps) {
       {
         type: "scatter",
         data: chartData,
-        symbolSize: (d: number[]) => Math.sqrt(d[2]),
+        symbolSize: (d: any[]) => Math.sqrt(d[2]),
         emphasis: {
           focus: "series",
           label: {
@@ -89,12 +113,19 @@ export default function BubbleChart({ data }: BubbleChartProps) {
             position: "top",
           },
         },
-        itemStyle: { color: "#5da4ef" },
+        itemStyle: {
+          color: (params: any) => params.data[4],
+        },
       },
     ],
   };
 
   const onEvents = {
+    click: (params: any) => {
+      if (!params?.data) return;
+      const blockchainName = params.data[3];
+      onSelectBlockchain(blockchainName);
+    },
     mouseover: (params: any) => {
       if (!params?.data) return;
       const [x, y, bubble] = params.data;

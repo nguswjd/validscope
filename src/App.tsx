@@ -2,7 +2,6 @@ import { useState } from "react";
 
 import Aside from "./component/aside";
 import Contents from "./component/contents";
-
 import BubbleChart from "./component/charts/bubble-chart";
 import RadarChart from "./component/charts/radar-chart";
 import LineChart from "./component/charts/line-chart";
@@ -19,6 +18,25 @@ export default function App() {
     { name: string; scores: Scores }[]
   >([]);
 
+  const [selectedForRadar, setSelectedForRadar] = useState<
+    { name: string; scores: Scores }[]
+  >([]);
+
+  const handleSelectBlockchain = (name: string) => {
+    const blockchain = selectedBlockchains.find((b) => b.name === name);
+    if (!blockchain) return;
+
+    const isAlreadySelected = selectedForRadar.some((b) => b.name === name);
+
+    if (isAlreadySelected) {
+      setSelectedForRadar(selectedForRadar.filter((b) => b.name !== name));
+    } else if (selectedForRadar.length < 4) {
+      setSelectedForRadar([...selectedForRadar, blockchain]);
+    } else {
+      setSelectedForRadar([...selectedForRadar.slice(1), blockchain]);
+    }
+  };
+
   return (
     <div className="w-screen">
       <Aside onSelect={setSelectedBlockchains} />
@@ -30,32 +48,18 @@ export default function App() {
             description="검증인이 되기 유리한 조건을 가진 블록체인 지도이다.
             오른쪽 위, 크기가 큰 체인일수록 검증인이 되기 쉽다."
           >
-            <BubbleChart data={selectedBlockchains} />
+            <BubbleChart
+              data={selectedBlockchains}
+              onSelectBlockchain={handleSelectBlockchain}
+              selectedBlockchains={selectedForRadar}
+            />
           </Contents>
           <Contents
             label="Comparison between elements"
             className="min-w-94 w-[60%]"
             description="블록체인 간, 각 지표별 점수의 차이를 비교할 수 있다."
           >
-            <RadarChart
-              data={[
-                {
-                  name: "COSMOS HUB",
-                  value: [4200, 3000, 20000, 35000, 50000],
-                  color: "#f24949",
-                },
-                {
-                  name: "ATOMONE",
-                  value: [5000, 14000, 28000, 26000, 42000],
-                  color: "#64b875",
-                },
-                {
-                  name: "OSMOSIS",
-                  value: [500, 1400, 30000, 6000, 21000],
-                  color: "#f09436",
-                },
-              ]}
-            />
+            <RadarChart selectedBlockchains={selectedForRadar} />
           </Contents>
         </div>
         <div className="flex h-102 min-w-5xl w-full gap-5">
@@ -82,7 +86,6 @@ export default function App() {
                 },
               ]}
             />
-
             <LineChart
               data={[
                 {
