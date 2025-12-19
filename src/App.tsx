@@ -90,11 +90,11 @@ export default function App() {
                 {
                   name: selectedForPieChart || "",
                   scores: {
-                    marketBarriers: 30,
-                    influence: 20,
-                    networkGovernance: 20,
-                    networkHealth: 10,
-                    profitability: 40,
+                    marketBarriers: 0,
+                    influence: 0,
+                    networkGovernance: 0,
+                    networkHealth: 0,
+                    profitability: 0,
                   },
                 },
               ]}
