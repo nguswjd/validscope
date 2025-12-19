@@ -1,7 +1,6 @@
 import ReactECharts from "echarts-for-react";
 
 type Scores = {
-  // 진입장벽, 영향력, 거버넌스, 네트워크 건강도, 수익성
   marketBarriers: number;
   influence: number;
   networkGovernance: number;
@@ -40,6 +39,7 @@ export default function PieChart({ data }: PieChartProps) {
   ];
 
   const total = chartData.reduce((sum, item) => sum + item.value, 0);
+  const isEmpty = total === 0;
 
   const option = {
     tooltip: { show: false },
@@ -55,11 +55,28 @@ export default function PieChart({ data }: PieChartProps) {
         emphasis: { label: { show: false } },
         labelLine: { show: false },
         silent: true,
-        data: chartData.map((item) => ({
-          name: item.name,
-          value: item.value,
-          itemStyle: { color: item.color },
-        })),
+        data: isEmpty
+          ? [
+              {
+                name: "empty",
+                value: 1,
+                itemStyle: {
+                  color: "rgba(0, 0, 0, 0.02)",
+                  borderColor: "#fff",
+                  borderWidth: 2,
+                  borderRadius: 10,
+                  shadowBlur: 2,
+                  shadowColor: "rgba(0, 0, 0, 0.11)",
+                  shadowOffsetX: 1,
+                  shadowOffsetY: 1,
+                },
+              },
+            ]
+          : chartData.map((item) => ({
+              name: item.name,
+              value: item.value,
+              itemStyle: { color: item.color },
+            })),
       },
     ],
   };
@@ -73,12 +90,13 @@ export default function PieChart({ data }: PieChartProps) {
       <div className="flex flex-col gap-3">
         {" "}
         {chartData.map((item) => {
-          const percent = ((item.value / total) * 100).toFixed(0) + "%";
+          const percent = isEmpty
+            ? "00%"
+            : ((item.value / total) * 100).toFixed(0) + "%";
           const borderClass =
             item.name === "영향력" || item.name === "네트워크 건강도"
-              ? "border-b border-gray-300 pb-2"
+              ? "border-b border-gray-2 pb-2"
               : "";
-
           return (
             <div
               key={item.name}

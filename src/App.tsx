@@ -88,13 +88,13 @@ export default function App() {
             <PieChart
               data={[
                 {
-                  name: selectedForPieChart || "COSMOS HUB",
+                  name: selectedForPieChart || "",
                   scores: {
-                    marketBarriers: 20,
+                    marketBarriers: 30,
                     influence: 20,
                     networkGovernance: 20,
-                    networkHealth: 30,
-                    profitability: 10,
+                    networkHealth: 10,
+                    profitability: 40,
                   },
                 },
               ]}
@@ -102,8 +102,8 @@ export default function App() {
             <LineChart
               data={[
                 {
-                  name: selectedForPieChart || "COSMOS HUB",
-                  value: [4, 3, 1, 2, 3, 1, 2],
+                  name: selectedForPieChart || "",
+                  value: [],
                 },
               ]}
             />
