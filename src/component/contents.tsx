@@ -54,7 +54,7 @@ function Contents({ className, label, children, description }: ContentsProps) {
           {showDescription && description && (
             <div
               ref={descriptionRef}
-              className="absolute top-full left-1/2 -translate-x-1/2 mt-2 p-3 bg-white border-2 border-gray-2 rounded-lg text-sm text-[#1D2641] z-10 w-max"
+              className="absolute top-full left-1/2 -translate-x-1/2 mt-2 py-2.5 px-[13px] bg-white border-2 border-gray-2 rounded-lg text-sm text-[#1D2641] z-10 w-max"
               style={{
                 boxShadow:
                   "0px 0px 0px 0px #3130400D, 0px 2px 4px 0px #3130400D, -1px 8px 8px 0px #3130400A, -2px 18px 11px 0px #31304008, -4px 32px 13px 0px #31304003, -6px 50px 14px 0px #31304000",

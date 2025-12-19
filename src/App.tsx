@@ -60,21 +60,6 @@ export default function App() {
         </div>
         <div className="flex h-full gap-5">
           <Contents
-            label="Normal distribution table for [blockchain]"
-            className="w-full"
-            description="각 지표별 상대 점수를 정규분표로 도식화하였다. 
-              왼쪽에 가까울수록 부정적, 오른쪽에 가까울수록 긍정적으로 주목할 수 있는 지표이다."
-          >
-            <LineChart
-              data={[
-                {
-                  name: "COSMOS HUB",
-                  value: [4, 3, 1, 2, 3, 1, 2],
-                },
-              ]}
-            />
-          </Contents>
-          <Contents
             label="Ratio between elements"
             className="w-[40%]"
             description="당신이 선택한 가중치에 따른 점수의 비율이다."
@@ -90,6 +75,21 @@ export default function App() {
                     networkHealth: 30,
                     profitability: 10,
                   },
+                },
+              ]}
+            />
+          </Contents>
+          <Contents
+            label="Normal distribution table for [blockchain]"
+            className="w-full"
+            description="각 지표별 상대 점수를 정규분표로 도식화하였다. 
+              왼쪽에 가까울수록 부정적, 오른쪽에 가까울수록 긍정적으로 주목할 수 있는 지표이다."
+          >
+            <LineChart
+              data={[
+                {
+                  name: "COSMOS HUB",
+                  value: [4, 3, 1, 2, 3, 1, 2],
                 },
               ]}
             />
