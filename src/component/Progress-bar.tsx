@@ -5,7 +5,6 @@ interface ProgressBarProps {
   height?: number;
   showLabel?: boolean;
   label?: React.ReactNode;
-  /** 'percent' | 'dollar' | 'score' */
   variant?: "percent" | "dollar" | "score";
   className?: string;
 }

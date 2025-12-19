@@ -218,16 +218,16 @@ export default function Aside({ onSelect }: AsideProps) {
             </button>
           </div>
         </div>
-        <div className="flex gap-2">
-          <div className="flex flex-col gap-1">
+        <div className="flex gap-2 w-full">
+          <div className="flex flex-col gap-1 w-full">
             <p>수익</p>
             <Input type="number" placeholder="00" />
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 w-full">
             <p>안전성</p>
             <Input type="number" placeholder="00" />
           </div>
-          <div className="flex flex-col gap-1">
+          <div className="flex flex-col gap-1 w-full">
             <p>진입장벽</p>
             <Input type="number" placeholder="00" />
           </div>
