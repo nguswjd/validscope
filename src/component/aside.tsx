@@ -307,9 +307,28 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
             <Input
               placeholder="$50-$2,000 사이의 자본을 입력하세요."
               value={inputValues.capital}
-              onChange={(e) =>
-                setInputValues((prev) => ({ ...prev, capital: e.target.value }))
-              }
+              onChange={(e) => {
+                const onlyNumber = e.target.value.replace(/[^\d]/g, "");
+                const formatted = onlyNumber
+                  ? Number(onlyNumber).toLocaleString()
+                  : "";
+                setInputValues((prev) => ({
+                  ...prev,
+                  capital: formatted,
+                }));
+              }}
+              onBlur={() => {
+                const onlyNumber = inputValues.capital.replace(/[^\d]/g, "");
+                if (!onlyNumber) return;
+
+                let value = Number(onlyNumber);
+                value = Math.max(50, Math.min(2000, value));
+
+                setInputValues((prev) => ({
+                  ...prev,
+                  capital: value.toLocaleString(),
+                }));
+              }}
             />
             <button
               onClick={handleSearch}
@@ -324,39 +343,63 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
             <p>수익</p>
             <Input
               type="number"
+              min={0}
+              max={100}
+              step={1}
               placeholder="00"
               value={inputValues.revenue}
-              onChange={(e) =>
-                setInputValues((prev) => ({ ...prev, revenue: e.target.value }))
-              }
+              onChange={(e) => {
+                const value = Math.max(
+                  0,
+                  Math.min(100, Number(e.target.value) || 0)
+                );
+                setInputValues((prev) => ({
+                  ...prev,
+                  revenue: String(value),
+                }));
+              }}
             />
           </div>
           <div className="flex flex-col gap-1 w-full">
             <p>안전성</p>
             <Input
               type="number"
+              min={0}
+              max={100}
+              step={1}
               placeholder="00"
               value={inputValues.stability}
-              onChange={(e) =>
+              onChange={(e) => {
+                const value = Math.max(
+                  0,
+                  Math.min(100, Number(e.target.value) || 0)
+                );
                 setInputValues((prev) => ({
                   ...prev,
-                  stability: e.target.value,
-                }))
-              }
+                  stability: String(value),
+                }));
+              }}
             />
           </div>
           <div className="flex flex-col gap-1 w-full">
             <p>진입장벽</p>
             <Input
               type="number"
+              min={0}
+              max={100}
+              step={1}
               placeholder="00"
               value={inputValues.marketBarriers}
-              onChange={(e) =>
+              onChange={(e) => {
+                const value = Math.max(
+                  0,
+                  Math.min(100, Number(e.target.value) || 0)
+                );
                 setInputValues((prev) => ({
                   ...prev,
-                  marketBarriers: e.target.value,
-                }))
-              }
+                  marketBarriers: String(value),
+                }));
+              }}
             />
           </div>
         </div>
