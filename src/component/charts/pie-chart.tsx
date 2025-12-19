@@ -1,11 +1,12 @@
+import { useMemo } from "react";
 import ReactECharts from "echarts-for-react";
 
 type Scores = {
-  marketBarriers: number;
-  influence: number;
-  networkGovernance: number;
-  networkHealth: number;
-  profitability: number;
+  entryScore: number; // Entry_score (0~100)
+  influenceScore: number; // Influence_score (0~100)
+  networkScore: number; // Network_score (0~100)
+  govDevScore: number; // GovDev_score (0~100)
+  profitScore: number; // Profit_score (0~100)
 };
 
 type PieChartProps = {
@@ -16,32 +17,54 @@ type PieChartProps = {
 };
 
 export default function PieChart({ data }: PieChartProps) {
-  if (!data || data.length === 0) return null;
+  const { chartData, normalizedChartData, isEmpty, option } = useMemo(() => {
+    if (!data || data.length === 0) {
+      return {
+        chartData: [],
+        normalizedChartData: [],
+        isEmpty: true,
+        option: {},
+      };
+    }
 
-  const chartData = [
-    {
-      name: "진입장벽",
-      value: data[0].scores.marketBarriers,
-      color: "#c2ddf8",
-    },
-    { name: "영향력", value: data[0].scores.influence, color: "#77b4f0" },
-    {
-      name: "거버넌스",
-      value: data[0].scores.networkGovernance,
-      color: "#4896ec",
-    },
-    {
-      name: "네트워크 건강도",
-      value: data[0].scores.networkHealth,
-      color: "#3776cb",
-    },
-    { name: "수익성", value: data[0].scores.profitability, color: "#1f489b" },
-  ];
+    const chartData = [
+      {
+        name: "Entry_score",
+        value: data[0].scores.entryScore,
+        color: "#c2ddf8",
+      },
+      {
+        name: "Influence_score",
+        value: data[0].scores.influenceScore,
+        color: "#77b4f0",
+      },
+      {
+        name: "Network_score",
+        value: data[0].scores.networkScore,
+        color: "#4896ec",
+      },
+      {
+        name: "GovDev_score",
+        value: data[0].scores.govDevScore,
+        color: "#3776cb",
+      },
+      {
+        name: "Profit_score",
+        value: data[0].scores.profitScore,
+        color: "#1f489b",
+      },
+    ];
 
-  const total = chartData.reduce((sum, item) => sum + item.value, 0);
-  const isEmpty = total === 0;
+    const total = chartData.reduce((sum, item) => sum + item.value, 0);
+    const isEmpty = total === 0;
 
-  const option = {
+    // 5개 값의 합이 100%가 되도록 비율 계산
+    const normalizedChartData = chartData.map((item) => ({
+      ...item,
+      normalizedValue: total > 0 ? (item.value / total) * 100 : 0,
+    }));
+
+    const option = {
     tooltip: { show: false },
     legend: { show: false },
     series: [
@@ -72,14 +95,19 @@ export default function PieChart({ data }: PieChartProps) {
                 },
               },
             ]
-          : chartData.map((item) => ({
+          : normalizedChartData.map((item) => ({
               name: item.name,
-              value: item.value,
+              value: item.normalizedValue,
               itemStyle: { color: item.color },
             })),
       },
     ],
   };
+
+    return { chartData, normalizedChartData, isEmpty, option };
+  }, [data]);
+
+  if (!data || data.length === 0) return null;
 
   return (
     <div>
@@ -89,12 +117,12 @@ export default function PieChart({ data }: PieChartProps) {
       />
       <div className="flex flex-col gap-3">
         {" "}
-        {chartData.map((item) => {
-          const percent = isEmpty
-            ? "00%"
-            : ((item.value / total) * 100).toFixed(0) + "%";
+        {normalizedChartData.map((item, index) => {
+          const percentage = isEmpty
+            ? "0.00"
+            : item.normalizedValue.toFixed(2);
           const borderClass =
-            item.name === "영향력" || item.name === "네트워크 건강도"
+            index < normalizedChartData.length - 1
               ? "border-b border-gray-2 pb-2"
               : "";
           return (
@@ -112,7 +140,7 @@ export default function PieChart({ data }: PieChartProps) {
                 </span>
               </div>
               <span className="text-sm text-black font-normal ml-2">
-                {percent}
+                {percentage}%
               </span>
             </div>
           );
