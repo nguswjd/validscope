@@ -1,11 +1,17 @@
 import { useState } from "react";
-
 import Aside from "./component/aside";
 import Contents from "./component/contents";
 import BubbleChart from "./component/charts/bubble-chart";
 import RadarChart from "./component/charts/radar-chart";
 import LineChart from "./component/charts/line-chart";
 import PieChart from "./component/charts/pie-chart";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./components/ui/select";
 
 type Scores = {
   marketBarriers: number;
@@ -14,6 +20,9 @@ type Scores = {
 };
 
 export default function App() {
+  const [allBlockchains, setAllBlockchains] = useState<
+    { name: string; scores: Scores }[]
+  >([]);
   const [selectedBlockchains, setSelectedBlockchains] = useState<
     { name: string; scores: Scores }[]
   >([]);
@@ -21,6 +30,7 @@ export default function App() {
   const [selectedForRadar, setSelectedForRadar] = useState<
     { name: string; scores: Scores }[]
   >([]);
+  const [selectedForPieChart, setSelectedForPieChart] = useState<string>("");
 
   const handleSelectBlockchain = (name: string) => {
     const blockchain = selectedBlockchains.find((b) => b.name === name);
@@ -39,7 +49,10 @@ export default function App() {
 
   return (
     <div className="w-screen">
-      <Aside onSelect={setSelectedBlockchains} />
+      <Aside
+        onSelect={setSelectedBlockchains}
+        onAllBlockchainsLoad={setAllBlockchains}
+      />
       <main className="ml-111 flex flex-col gap-5 p-5">
         <div className="flex h-110 gap-5">
           <Contents
@@ -62,7 +75,7 @@ export default function App() {
             <RadarChart selectedBlockchains={selectedForRadar} />
           </Contents>
         </div>
-        <div className="flex h-102 min-w-5xl w-full gap-5">
+        <div className="flex h-102 min-w-5xl w-full gap-5 relative">
           <Contents
             variant="twochart"
             label="Ratio between elements"
@@ -75,7 +88,7 @@ export default function App() {
             <PieChart
               data={[
                 {
-                  name: "COSMOS HUB",
+                  name: selectedForPieChart || "COSMOS HUB",
                   scores: {
                     marketBarriers: 20,
                     influence: 20,
@@ -89,12 +102,30 @@ export default function App() {
             <LineChart
               data={[
                 {
-                  name: "COSMOS HUB",
+                  name: selectedForPieChart || "COSMOS HUB",
                   value: [4, 3, 1, 2, 3, 1, 2],
                 },
               ]}
             />
           </Contents>
+
+          <div className="absolute w-59 top-5 right-5 bg-white">
+            <Select
+              value={selectedForPieChart}
+              onValueChange={setSelectedForPieChart}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="블록체인을 선택하세요" />
+              </SelectTrigger>
+              <SelectContent>
+                {allBlockchains.map((blockchain) => (
+                  <SelectItem key={blockchain.name} value={blockchain.name}>
+                    {blockchain.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </main>
     </div>
