@@ -14,9 +14,10 @@ type Scores = {
 
 type AsideProps = {
   onSelect: (selected: { name: string; scores: Scores }[]) => void;
+  onAllBlockchainsLoad: (all: { name: string; scores: Scores }[]) => void;
 };
 
-export default function Aside({ onSelect }: AsideProps) {
+export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
   const [rawMetrics, setRawMetrics] = useState<
     { name: string; data: Record<string, number> }[]
   >([]);
@@ -97,7 +98,6 @@ export default function Aside({ onSelect }: AsideProps) {
           results.push({ name: chain.name, data: row });
         } catch (e) {
           // 네트워크 에러 등은 무시하고 계속 진행
-          // console.error(e);
         }
       }
 
@@ -111,8 +111,6 @@ export default function Aside({ onSelect }: AsideProps) {
     row: Record<string, number>,
     capitalSliderValue: number
   ): Scores => {
-    // 자본 슬라이더(0~100)를 실제 C 값으로 매핑
-    // 필요에 따라 1000 배수 등은 조정 가능
     const C = capitalSliderValue * 1000;
 
     const cutoff = row["cutoff_token"] ?? 0;
@@ -127,9 +125,9 @@ export default function Aside({ onSelect }: AsideProps) {
       }
     }
 
-    const top10Share = row["top10_share"] ?? 0; // 0~1
-    const gini = row["gini_token"] ?? 0; // 0~1
-    const hhi = row["hhi_token"] ?? 0; // 0~1
+    const top10Share = row["top10_share"] ?? 0;
+    const gini = row["gini_token"] ?? 0;
+    const hhi = row["hhi_token"] ?? 0;
 
     const inflTop10 = 1 - top10Share;
     const inflGini = 1 - gini;
@@ -153,8 +151,8 @@ export default function Aside({ onSelect }: AsideProps) {
       0.4 * proposalPassRate + 0.3 * govTurnoutRatio + 0.3 * devScore;
     govdevScore = Math.max(0, Math.min(1, govdevScore));
 
-    const apr = row["apr"] ?? 0; // 0.171 같은 값
-    let profitScore = apr / 0.3; // 30%를 1점으로 가정
+    const apr = row["apr"] ?? 0;
+    let profitScore = apr / 0.3;
     if (profitScore > 1) profitScore = 1;
     profitScore = Math.max(0, Math.min(1, profitScore));
 
@@ -162,11 +160,9 @@ export default function Aside({ onSelect }: AsideProps) {
     const cat2NetworkGovdev = (networkScore + govdevScore) / 2;
     const cat3Profit = profitScore;
 
-    // 각 값의 최대를 33.33% 정도로 표현하기 위한 스케일 (1 → 33.33)
     const thirdScale = 100 / 3;
 
     return {
-      // 세 값은 서로 독립적으로 0~33.33% 범위로만 스케일링됨 (합은 얼마든지 가능)
       marketBarriers: cat1EntryInfluence * thirdScale,
       networkGovernance: cat2NetworkGovdev * thirdScale,
       profitability: cat3Profit * thirdScale,
@@ -190,11 +186,12 @@ export default function Aside({ onSelect }: AsideProps) {
           b.scores.marketBarriers +
           b.scores.networkGovernance +
           b.scores.profitability;
-        return sumB - sumA; // 합이 큰 것부터(내림차순)
+        return sumB - sumA;
       });
 
     setBlockchains(updated);
-  }, [rawMetrics, sliderValues.capital]);
+    onAllBlockchainsLoad(updated);
+  }, [rawMetrics, sliderValues.capital, onAllBlockchainsLoad]);
 
   const handleToggle = (name: string) => {
     const newSelected = selected.includes(name)

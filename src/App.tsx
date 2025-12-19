@@ -1,12 +1,17 @@
 import { useState } from "react";
-
 import Aside from "./component/aside";
 import Contents from "./component/contents";
-
 import BubbleChart from "./component/charts/bubble-chart";
 import RadarChart from "./component/charts/radar-chart";
 import LineChart from "./component/charts/line-chart";
 import PieChart from "./component/charts/pie-chart";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./components/ui/select";
 
 type Scores = {
   marketBarriers: number;
@@ -15,13 +20,39 @@ type Scores = {
 };
 
 export default function App() {
+  const [allBlockchains, setAllBlockchains] = useState<
+    { name: string; scores: Scores }[]
+  >([]);
   const [selectedBlockchains, setSelectedBlockchains] = useState<
     { name: string; scores: Scores }[]
   >([]);
 
+  const [selectedForRadar, setSelectedForRadar] = useState<
+    { name: string; scores: Scores }[]
+  >([]);
+  const [selectedForPieChart, setSelectedForPieChart] = useState<string>("");
+
+  const handleSelectBlockchain = (name: string) => {
+    const blockchain = selectedBlockchains.find((b) => b.name === name);
+    if (!blockchain) return;
+
+    const isAlreadySelected = selectedForRadar.some((b) => b.name === name);
+
+    if (isAlreadySelected) {
+      setSelectedForRadar(selectedForRadar.filter((b) => b.name !== name));
+    } else if (selectedForRadar.length < 4) {
+      setSelectedForRadar([...selectedForRadar, blockchain]);
+    } else {
+      setSelectedForRadar([...selectedForRadar.slice(1), blockchain]);
+    }
+  };
+
   return (
     <div className="w-screen">
-      <Aside onSelect={setSelectedBlockchains} />
+      <Aside
+        onSelect={setSelectedBlockchains}
+        onAllBlockchainsLoad={setAllBlockchains}
+      />
       <main className="ml-111 flex flex-col gap-5 p-5">
         <div className="flex h-110 gap-5">
           <Contents
@@ -30,35 +61,21 @@ export default function App() {
             description="검증인이 되기 유리한 조건을 가진 블록체인 지도이다.
             오른쪽 위, 크기가 큰 체인일수록 검증인이 되기 쉽다."
           >
-            <BubbleChart data={selectedBlockchains} />
+            <BubbleChart
+              data={selectedBlockchains}
+              onSelectBlockchain={handleSelectBlockchain}
+              selectedBlockchains={selectedForRadar}
+            />
           </Contents>
           <Contents
             label="Comparison between elements"
             className="min-w-94 w-[60%]"
             description="블록체인 간, 각 지표별 점수의 차이를 비교할 수 있다."
           >
-            <RadarChart
-              data={[
-                {
-                  name: "COSMOS HUB",
-                  value: [4200, 3000, 20000, 35000, 50000],
-                  color: "#f24949",
-                },
-                {
-                  name: "ATOMONE",
-                  value: [5000, 14000, 28000, 26000, 42000],
-                  color: "#64b875",
-                },
-                {
-                  name: "OSMOSIS",
-                  value: [500, 1400, 30000, 6000, 21000],
-                  color: "#f09436",
-                },
-              ]}
-            />
+            <RadarChart selectedBlockchains={selectedForRadar} />
           </Contents>
         </div>
-        <div className="flex h-102 min-w-5xl w-full gap-5">
+        <div className="flex h-102 min-w-5xl w-full gap-5 relative">
           <Contents
             variant="twochart"
             label="Ratio between elements"
@@ -71,27 +88,44 @@ export default function App() {
             <PieChart
               data={[
                 {
-                  name: "COSMOS HUB",
+                  name: selectedForPieChart || "",
                   scores: {
-                    marketBarriers: 20,
+                    marketBarriers: 30,
                     influence: 20,
                     networkGovernance: 20,
-                    networkHealth: 30,
-                    profitability: 10,
+                    networkHealth: 10,
+                    profitability: 40,
                   },
                 },
               ]}
             />
-
             <LineChart
               data={[
                 {
-                  name: "COSMOS HUB",
-                  value: [4, 3, 1, 2, 3, 1, 2],
+                  name: selectedForPieChart || "",
+                  value: [],
                 },
               ]}
             />
           </Contents>
+
+          <div className="absolute w-59 top-5 right-5 bg-white">
+            <Select
+              value={selectedForPieChart}
+              onValueChange={setSelectedForPieChart}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="블록체인을 선택하세요" />
+              </SelectTrigger>
+              <SelectContent>
+                {allBlockchains.map((blockchain) => (
+                  <SelectItem key={blockchain.name} value={blockchain.name}>
+                    {blockchain.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
       </main>
     </div>
