@@ -90,7 +90,9 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
 
       for (const chain of chains) {
         try {
-          const res = await fetch(`/data/${chain.id}_metrics.csv`);
+          const res = await fetch(
+            `${import.meta.env.BASE_URL}data/${chain.id}_metrics.csv`
+          );
           if (!res.ok) continue;
           const text = await res.text();
           const row = parseCsvToRow(text);
