@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import LogoImage from "../assets/logo.svg";
 
 import BlockchainBtn from "./blockchain-btn";
-import { Slider } from "./ui/slider";
 
 type Scores = {
   marketBarriers: number;
@@ -24,7 +23,7 @@ export default function Aside({ onSelect }: AsideProps) {
   >([]);
 
   const [selected, setSelected] = useState<string[]>([]);
-  const [sliderValues, setSliderValues] = useState({
+  const [sliderValues] = useState({
     capital: 50,
     revenue: 50,
     stability: 50,
@@ -205,12 +204,10 @@ export default function Aside({ onSelect }: AsideProps) {
 
   return (
     <aside className="w-[29.37vw] max-w-111 h-screen border-r-2 border-gray-2 flex flex-col">
-      <header className="bg-white px-4 pt-4 pb-3 flex flex-col justify-between h-31">
+      <header className="bg-white px-4 pt-4 pb-3 flex flex-col justify-between">
         <h1>
-          <img src={LogoImage} alt="Validscope 로고" className="max-h-11" />
+          <img src={LogoImage} alt="Validscope 로고" className="max-w-42.5" />
         </h1>
-        <h2 className="text-xl text-black">Top Recommendations</h2>
-        <span className="text-gray-4 text-base font-light">Select the bar</span>
       </header>
       <section className="flex-1 overflow-y-auto border-y-2 border-gray-2 p-4 hide-scrollbar">
         <nav>
@@ -230,49 +227,7 @@ export default function Aside({ onSelect }: AsideProps) {
           </ul>
         </nav>
       </section>
-      <footer className="bg-white h-48 px-5 py-2 flex gap-5 justify-around">
-        <div className="grid gird-cols-1 w-full items-center">
-          <Slider
-            label="자본"
-            unit={`$${sliderValues.capital}`}
-            value={[sliderValues.capital]}
-            max={100}
-            onValueChange={(val) =>
-              setSliderValues((prev) => ({ ...prev, capital: val[0] }))
-            }
-          />
-          <Slider
-            label="수익"
-            unit={`${sliderValues.revenue}%`}
-            value={[sliderValues.revenue]}
-            max={100}
-            onValueChange={(val) =>
-              setSliderValues((prev) => ({ ...prev, revenue: val[0] }))
-            }
-          />
-          <Slider
-            label="안정성"
-            unit={`${sliderValues.stability}%`}
-            value={[sliderValues.stability]}
-            max={100}
-            onValueChange={(val) =>
-              setSliderValues((prev) => ({ ...prev, stability: val[0] }))
-            }
-          />
-          <Slider
-            label="진입장벽"
-            unit={`${sliderValues.marketBarriers}%`}
-            value={[sliderValues.marketBarriers]}
-            max={100}
-            onValueChange={(val) =>
-              setSliderValues((prev) => ({ ...prev, marketBarriers: val[0] }))
-            }
-          />
-        </div>
-        <button className="bg-blue-6 cursor-pointer rounded-sm px-5 py-2 text-white font-semibold text-base">
-          Find
-        </button>
-      </footer>
+      <footer className="bg-white px-5 py-2 flex gap-5"></footer>
     </aside>
   );
 }
