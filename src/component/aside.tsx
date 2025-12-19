@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import LogoImage from "../assets/logo.svg";
 
 import BlockchainBtn from "./blockchain-btn";
+import { Input } from "../components/ui/input";
 
 type Scores = {
   marketBarriers: number;
@@ -208,6 +209,7 @@ export default function Aside({ onSelect }: AsideProps) {
         <h1>
           <img src={LogoImage} alt="Validscope 로고" className="max-w-42.5" />
         </h1>
+        <Input type="number" />
       </header>
       <section className="flex-1 overflow-y-auto border-y-2 border-gray-2 p-4 hide-scrollbar">
         <nav>
