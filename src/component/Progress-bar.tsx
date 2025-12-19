@@ -23,7 +23,10 @@ export default function ProgressBar({
     <div className={`w-full ${className}`}>
       {showLabel && (
         <div className="mb-1 flex items-center justify-between text-xs text-black">
-          <div>{label}</div>
+          <div className="flex gap-1 items-center">
+            <p className="w-1.5 h-1.5 bg-blue-2 rounded-full"></p>
+            {label}
+          </div>
           <span>
             {variant === "dollar" && `$${safeValue}`}
             {variant === "score" && `${safeValue}/100`}
