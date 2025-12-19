@@ -6,6 +6,8 @@ type Scores = {
   marketBarriers: number;
   networkGovernance: number;
   profitability: number;
+  rawMarketBarriers?: number; // 원본 점수 (0~100)
+  rawProfitability?: number; // 원본 점수 (0~100)
 };
 
 type BubbleChartProps = {
@@ -35,6 +37,22 @@ export default function BubbleChart({
 }: BubbleChartProps) {
   const colors = ["#5da4ef", "#64b875", "#785bbc", "#f24949"];
 
+  // X축 데이터의 최소값과 최대값 계산 (min-max 정규화용)
+  const xValues = data.map(
+    (b) => b.scores.rawMarketBarriers ?? b.scores.marketBarriers
+  );
+  const minX = Math.min(...xValues);
+  const maxX = Math.max(...xValues);
+  const rangeX = maxX - minX || 1; // 0으로 나누는 것 방지
+
+  // Y축 데이터의 최소값과 최대값 계산 (min-max 정규화용)
+  const yValues = data.map(
+    (b) => b.scores.rawProfitability ?? b.scores.profitability
+  );
+  const minY = Math.min(...yValues);
+  const maxY = Math.max(...yValues);
+  const rangeY = maxY - minY || 1; // 0으로 나누는 것 방지
+
   const chartData = data.map((b) => {
     const selectedIndex = selectedBlockchains.findIndex(
       (selected) => selected.name === b.name
@@ -50,19 +68,34 @@ export default function BubbleChart({
           : "rgba(93, 164, 239, 0.3)";
     }
 
+    // 원본 점수 (0~100 범위)
+    const xRaw = b.scores.rawMarketBarriers ?? b.scores.marketBarriers;
+    const yRaw = b.scores.rawProfitability ?? b.scores.profitability;
+
+    // X축과 Y축에 min-max 정규화 적용 (0~100 범위로 스케일링)
+    const xValue = ((xRaw - minX) / rangeX) * 100;
+    const yValue = ((yRaw - minY) / rangeY) * 100;
+
+    // 버블 크기는 2배로 표시하되, hint에는 원래 값 표시
+    const bubbleSize = b.scores.networkGovernance * 100; // 2배로 표시
+    const bubbleOriginalValue = b.scores.networkGovernance; // 원래 값 (hint용)
+
     return [
-      b.scores.marketBarriers * 2,
-      b.scores.profitability * 2,
-      b.scores.networkGovernance * 50,
+      xValue, // X축 min-max 정규화된 값
+      yValue, // Y축 min-max 정규화된 값
+      bubbleSize, // 버블 scale (2배)
       b.name,
       color,
+      xRaw, // 원본 X값 (hint 표시용)
+      yRaw, // 원본 Y값 (hint 표시용)
+      bubbleOriginalValue, // 원본 버블 값 (hint 표시용)
     ];
   });
 
   const [hintValues, setHintValues] = useState({
-    x: "00",
-    y: "00",
-    bubble: "00",
+    x: "0.00",
+    y: "0.00",
+    bubble: "0.00",
   });
 
   const option = {
@@ -87,6 +120,8 @@ export default function BubbleChart({
       splitLine: { show: false },
       axisLabel: { show: false },
       axisTick: { show: false },
+      min: 0,
+      max: 100,
     },
     yAxis: {
       name: "Health Score",
@@ -99,6 +134,8 @@ export default function BubbleChart({
       splitLine: { show: false },
       axisLabel: { show: false },
       axisTick: { show: false },
+      min: 0,
+      max: 100,
     },
     series: [
       {
@@ -128,15 +165,20 @@ export default function BubbleChart({
     },
     mouseover: (params: any) => {
       if (!params?.data) return;
-      const [x, y, bubble] = params.data;
+      const [x, y, bubble, , , originalX, originalY, originalBubble] =
+        params.data;
+      // hint에는 원래 값 표시
       setHintValues({
-        x: x.toFixed(0),
-        y: y.toFixed(0),
-        bubble: bubble.toFixed(0),
+        x: originalX !== undefined ? originalX.toFixed(2) : x.toFixed(2),
+        y: originalY !== undefined ? originalY.toFixed(2) : y.toFixed(2),
+        bubble:
+          originalBubble !== undefined
+            ? originalBubble.toFixed(2)
+            : bubble.toFixed(2),
       });
     },
     mouseout: () => {
-      setHintValues({ x: "00", y: "00", bubble: "00" });
+      setHintValues({ x: "0.00", y: "0.00", bubble: "0.00" });
     },
   };
 

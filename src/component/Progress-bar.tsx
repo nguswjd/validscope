@@ -17,7 +17,11 @@ export default function ProgressBar({
   variant = "percent",
   className = "",
 }: ProgressBarProps) {
-  const safeValue = Math.min(100, Math.max(0, value));
+  // dollar variant는 값 제한 없음, 나머지는 0~100으로 제한
+  const displayValue =
+    variant === "dollar" ? Math.max(0, value) : Math.min(100, Math.max(0, value));
+  // 막대 그래프는 항상 0~100%로 제한
+  const barWidth = Math.min(100, Math.max(0, value));
 
   return (
     <div className={`w-full ${className}`}>
@@ -28,8 +32,8 @@ export default function ProgressBar({
             {label}
           </div>
           <span>
-            {variant === "dollar" && `$${safeValue}`}
-            {variant === "score" && `${safeValue}/100`}
+            {variant === "dollar" && `$${displayValue.toFixed(2)}`}
+            {variant === "score" && `${displayValue.toFixed(2)}/100`}
           </span>
         </div>
       )}
@@ -40,7 +44,7 @@ export default function ProgressBar({
       >
         <div
           className="h-full rounded-full bg-gradient-blue-2 transition-all duration-300"
-          style={{ width: `${safeValue}%` }}
+          style={{ width: `${barWidth}%` }}
         />
       </div>
     </div>

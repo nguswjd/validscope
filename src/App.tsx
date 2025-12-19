@@ -17,6 +17,13 @@ type Scores = {
   marketBarriers: number;
   networkGovernance: number;
   profitability: number;
+  rawMarketBarriers?: number;
+  rawProfitability?: number;
+  rawEntryScore?: number;
+  rawInfluenceScore?: number;
+  rawNetworkScore?: number;
+  rawGovDevScore?: number;
+  rawProfitScore?: number;
 };
 
 export default function App() {
@@ -39,12 +46,19 @@ export default function App() {
     const isAlreadySelected = selectedForRadar.some((b) => b.name === name);
 
     if (isAlreadySelected) {
+      // 이미 선택된 버블을 클릭하면 취소
       setSelectedForRadar(selectedForRadar.filter((b) => b.name !== name));
-    } else if (selectedForRadar.length < 4) {
-      setSelectedForRadar([...selectedForRadar, blockchain]);
-    } else {
-      setSelectedForRadar([...selectedForRadar.slice(1), blockchain]);
+      return;
     }
+
+    // 새로운 버블을 클릭한 경우
+    if (selectedForRadar.length >= 4) {
+      // 4개가 이미 선택된 상태에서 새로운 버블을 클릭하면 아무것도 하지 않음
+      return;
+    }
+
+    // 4개 미만이면 추가
+    setSelectedForRadar([...selectedForRadar, blockchain]);
   };
 
   return (
@@ -86,17 +100,32 @@ export default function App() {
               왼쪽에 가까울수록 부정적, 오른쪽에 가까울수록 긍정적으로 주목할 수 있는 지표이다."
           >
             <PieChart
+              key={selectedForPieChart}
               data={[
-                {
-                  name: selectedForPieChart || "",
-                  scores: {
-                    marketBarriers: 0,
-                    influence: 0,
-                    networkGovernance: 0,
-                    networkHealth: 0,
-                    profitability: 0,
-                  },
-                },
+                (() => {
+                  // allBlockchains 또는 selectedBlockchains에서 찾기
+                  const selectedBlockchain =
+                    allBlockchains.find(
+                      (b) => b.name === selectedForPieChart
+                    ) ||
+                    selectedBlockchains.find(
+                      (b) => b.name === selectedForPieChart
+                    );
+                  return {
+                    name: selectedForPieChart || "",
+                    scores: {
+                      entryScore: selectedBlockchain?.scores.rawEntryScore ?? 0,
+                      influenceScore:
+                        selectedBlockchain?.scores.rawInfluenceScore ?? 0,
+                      networkScore:
+                        selectedBlockchain?.scores.rawNetworkScore ?? 0,
+                      govDevScore:
+                        selectedBlockchain?.scores.rawGovDevScore ?? 0,
+                      profitScore:
+                        selectedBlockchain?.scores.rawProfitScore ?? 0,
+                    },
+                  };
+                })(),
               ]}
             />
             <LineChart
