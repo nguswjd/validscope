@@ -307,9 +307,28 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
             <Input
               placeholder="$50-$2,000 사이의 자본을 입력하세요."
               value={inputValues.capital}
-              onChange={(e) =>
-                setInputValues((prev) => ({ ...prev, capital: e.target.value }))
-              }
+              onChange={(e) => {
+                const onlyNumber = e.target.value.replace(/[^\d]/g, "");
+                const formatted = onlyNumber
+                  ? Number(onlyNumber).toLocaleString()
+                  : "";
+                setInputValues((prev) => ({
+                  ...prev,
+                  capital: formatted,
+                }));
+              }}
+              onBlur={() => {
+                const onlyNumber = inputValues.capital.replace(/[^\d]/g, "");
+                if (!onlyNumber) return;
+
+                let value = Number(onlyNumber);
+                value = Math.max(50, Math.min(2000, value));
+
+                setInputValues((prev) => ({
+                  ...prev,
+                  capital: value.toLocaleString(),
+                }));
+              }}
             />
             <button
               onClick={handleSearch}
