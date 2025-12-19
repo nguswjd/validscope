@@ -41,24 +41,21 @@ export default function App() {
 
   const handleSelectBlockchain = (name: string) => {
     const blockchain = selectedBlockchains.find((b) => b.name === name);
+
     if (!blockchain) return;
 
     const isAlreadySelected = selectedForRadar.some((b) => b.name === name);
 
     if (isAlreadySelected) {
-      // 이미 선택된 버블을 클릭하면 취소
       setSelectedForRadar(selectedForRadar.filter((b) => b.name !== name));
       return;
     }
 
-    // 새로운 버블을 클릭한 경우
     if (selectedForRadar.length >= 4) {
-      // 4개가 이미 선택된 상태에서 새로운 버블을 클릭하면 아무것도 하지 않음
-      return;
+      setSelectedForRadar([...selectedForRadar.slice(1), blockchain]);
+    } else {
+      setSelectedForRadar([...selectedForRadar, blockchain]);
     }
-
-    // 4개 미만이면 추가
-    setSelectedForRadar([...selectedForRadar, blockchain]);
   };
 
   return (
