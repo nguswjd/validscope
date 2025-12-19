@@ -20,10 +20,10 @@ export default function App() {
   >([]);
 
   return (
-    <div className="flex h-screen w-screen">
+    <div className="flex w-screen">
       <Aside onSelect={(blockchains) => setSelectedBlockchains(blockchains)} />
       <main className="flex flex-col gap-5 p-5 ml-[33vw] flex-1 overflow-auto">
-        <div className="flex h-full gap-5">
+        <div className="flex h-110 gap-5">
           <Contents
             label="Bubble chart for blockchains"
             className="w-full"
@@ -58,7 +58,7 @@ export default function App() {
             />
           </Contents>
         </div>
-        <div className="flex w-full h-full gap-5">
+        <div className="flex h-102 w-full gap-5">
           <Contents
             variant="twochart"
             label="Ratio between elements"

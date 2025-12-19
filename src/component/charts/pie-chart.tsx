@@ -68,7 +68,7 @@ export default function PieChart({ data }: PieChartProps) {
     <div>
       <ReactECharts
         option={option}
-        style={{ height: "300px", width: "100%" }}
+        style={{ height: "184px", width: "100%" }}
       />
       <div className="flex flex-col gap-3">
         {" "}
