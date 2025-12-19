@@ -58,11 +58,15 @@ export default function App() {
             />
           </Contents>
         </div>
-        <div className="flex h-full gap-5">
+        <div className="flex w-full h-full gap-5">
           <Contents
+            variant="twochart"
             label="Ratio between elements"
+            label2="Normal distribution table for [blockchain]"
             className="w-[40%]"
             description="당신이 선택한 가중치에 따른 점수의 비율이다."
+            description2="각 지표별 상대 점수를 정규분표로 도식화하였다.
+              왼쪽에 가까울수록 부정적, 오른쪽에 가까울수록 긍정적으로 주목할 수 있는 지표이다."
           >
             <PieChart
               data={[
@@ -78,13 +82,7 @@ export default function App() {
                 },
               ]}
             />
-          </Contents>
-          <Contents
-            label="Normal distribution table for [blockchain]"
-            className="w-full"
-            description="각 지표별 상대 점수를 정규분표로 도식화하였다. 
-              왼쪽에 가까울수록 부정적, 오른쪽에 가까울수록 긍정적으로 주목할 수 있는 지표이다."
-          >
+
             <LineChart
               data={[
                 {
