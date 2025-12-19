@@ -17,7 +17,7 @@ type PieChartProps = {
 };
 
 export default function PieChart({ data }: PieChartProps) {
-  const { chartData, normalizedChartData, isEmpty, option } = useMemo(() => {
+  const { normalizedChartData, isEmpty, option } = useMemo(() => {
     if (!data || data.length === 0) {
       return {
         chartData: [],
@@ -65,44 +65,44 @@ export default function PieChart({ data }: PieChartProps) {
     }));
 
     const option = {
-    tooltip: { show: false },
-    legend: { show: false },
-    series: [
-      {
-        name: data[0].name,
-        type: "pie",
-        radius: ["40%", "70%"],
-        avoidLabelOverlap: false,
-        itemStyle: { borderRadius: 10, borderColor: "#fff", borderWidth: 2 },
-        label: { show: false },
-        emphasis: { label: { show: false } },
-        labelLine: { show: false },
-        silent: true,
-        data: isEmpty
-          ? [
-              {
-                name: "empty",
-                value: 1,
-                itemStyle: {
-                  color: "rgba(0, 0, 0, 0.02)",
-                  borderColor: "#fff",
-                  borderWidth: 2,
-                  borderRadius: 10,
-                  shadowBlur: 2,
-                  shadowColor: "rgba(0, 0, 0, 0.11)",
-                  shadowOffsetX: 1,
-                  shadowOffsetY: 1,
+      tooltip: { show: false },
+      legend: { show: false },
+      series: [
+        {
+          name: data[0].name,
+          type: "pie",
+          radius: ["40%", "70%"],
+          avoidLabelOverlap: false,
+          itemStyle: { borderRadius: 10, borderColor: "#fff", borderWidth: 2 },
+          label: { show: false },
+          emphasis: { label: { show: false } },
+          labelLine: { show: false },
+          silent: true,
+          data: isEmpty
+            ? [
+                {
+                  name: "empty",
+                  value: 1,
+                  itemStyle: {
+                    color: "rgba(0, 0, 0, 0.02)",
+                    borderColor: "#fff",
+                    borderWidth: 2,
+                    borderRadius: 10,
+                    shadowBlur: 2,
+                    shadowColor: "rgba(0, 0, 0, 0.11)",
+                    shadowOffsetX: 1,
+                    shadowOffsetY: 1,
+                  },
                 },
-              },
-            ]
-          : normalizedChartData.map((item) => ({
-              name: item.name,
-              value: item.normalizedValue,
-              itemStyle: { color: item.color },
-            })),
-      },
-    ],
-  };
+              ]
+            : normalizedChartData.map((item) => ({
+                name: item.name,
+                value: item.normalizedValue,
+                itemStyle: { color: item.color },
+              })),
+        },
+      ],
+    };
 
     return { chartData, normalizedChartData, isEmpty, option };
   }, [data]);
@@ -118,9 +118,7 @@ export default function PieChart({ data }: PieChartProps) {
       <div className="flex flex-col gap-3">
         {" "}
         {normalizedChartData.map((item, index) => {
-          const percentage = isEmpty
-            ? "0.00"
-            : item.normalizedValue.toFixed(2);
+          const percentage = isEmpty ? "0.00" : item.normalizedValue.toFixed(2);
           const borderClass =
             index < normalizedChartData.length - 1
               ? "border-b border-gray-2 pb-2"
