@@ -101,7 +101,7 @@ export default function BlockchainBtn({
         alt={altText}
         className="w-6 h-6 rounded-full bg-gray-3"
       />
-      <div className="w-[85%] h-[25px] bg-[#F1F1F5] rounded flex overflow-hidden">
+      <div className="w-[85%] h-6.25 bg-[#F1F1F5] rounded flex overflow-hidden">
         <div
           className="bg-gradient-blue-3"
           style={{ width: `${marketBarriers}%` }}

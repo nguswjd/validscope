@@ -4,7 +4,7 @@ import LogoImage from "../assets/logo.svg";
 
 import BlockchainBtn from "./blockchain-btn";
 import ProgressBar from "./Progress-bar";
-import { Input } from "../components/ui/input";
+import { Input } from "./ui/input";
 
 type Scores = {
   marketBarriers: number;
@@ -416,7 +416,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
                 onMouseEnter={() => setHoveredItem(item.name)}
                 onMouseLeave={() => setHoveredItem(null)}
               >
-                <p className="w-5 text-center text-black">{idx + 1}</p>
+                <p className="w-5 text-center text-black mr-2">{idx + 1}</p>
                 <BlockchainBtn
                   name={item.name}
                   scores={item.scores}
