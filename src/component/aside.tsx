@@ -22,9 +22,11 @@ type Scores = {
 type AsideProps = {
   onSelect: (selected: { name: string; scores: Scores }[]) => void;
   onAllBlockchainsLoad: (all: { name: string; scores: Scores }[]) => void;
+  onRawMetricsLoad?: (rawMetrics: { name: string; data: Record<string, number> }[]) => void;
+  onCapitalChange?: (capital: number) => void;
 };
 
-export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
+export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad, onCapitalChange }: AsideProps) {
   const [rawMetrics, setRawMetrics] = useState<
     { name: string; data: Record<string, number> }[]
   >([]);
@@ -124,10 +126,13 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
       }
 
       setRawMetrics(results);
+      if (onRawMetricsLoad) {
+        onRawMetricsLoad(results);
+      }
     };
 
     load();
-  }, []);
+  }, [onRawMetricsLoad]);
 
   const calculateScoresFromMetrics = (
     row: Record<string, number>,
@@ -294,6 +299,9 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
       marketBarriers,
       isInitial: false, // Search 버튼을 눌렀으므로 초기 상태 아님
     });
+    if (onCapitalChange) {
+      onCapitalChange(capital);
+    }
   };
   return (
     <aside className="w-111 h-dvh border-r-2 border-gray-2 flex flex-col fixed left-0 top-0 z-10 bg-white">
@@ -493,17 +501,17 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
             <>
               <ProgressBar
                 value={roundedProfitAmount}
-                label="수익"
+            label="수익"
                 variant="dollar"
               />
               <ProgressBar
                 value={roundedStability}
-                label="안정성"
+            label="안정성"
                 variant="score"
               />
               <ProgressBar
                 value={roundedMarketBarriers}
-                label="진입장벽"
+            label="진입장벽"
                 variant="score"
               />
             </>
