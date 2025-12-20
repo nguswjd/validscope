@@ -200,7 +200,6 @@ function LineChart({
     const top10Share = metrics["top10_share"] ?? 0;
     const nakamoto33 = metrics["nakamoto33"] ?? 0;
     const govTurnout = metrics["gov_turnout_ratio_est"] ?? 0;
-    const devCommits30d = metrics["dev_commits_30d"] ?? 0;
     const missRatio = metrics["miss_ratio"] ?? 0;
     const hhi = metrics["hhi_token"] ?? 0;
     const apr = metrics["apr"] ?? 0;
