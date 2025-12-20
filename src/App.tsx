@@ -38,6 +38,10 @@ export default function App() {
     { name: string; scores: Scores }[]
   >([]);
   const [selectedForPieChart, setSelectedForPieChart] = useState<string>("");
+  const [rawMetrics, setRawMetrics] = useState<
+    { name: string; data: Record<string, number> }[]
+  >([]);
+  const [capital, setCapital] = useState<number>(50);
 
   const handleSelectBlockchain = (name: string) => {
     const blockchain = selectedBlockchains.find((b) => b.name === name);
@@ -63,6 +67,8 @@ export default function App() {
       <Aside
         onSelect={setSelectedBlockchains}
         onAllBlockchainsLoad={setAllBlockchains}
+        onRawMetricsLoad={setRawMetrics}
+        onCapitalChange={setCapital}
       />
       <main className="ml-111 flex flex-col gap-5 p-5">
         <div className="flex h-110 gap-5">
@@ -128,6 +134,8 @@ export default function App() {
             <LineChart
               allBlockchains={allBlockchains}
               selectedBlockchainName={selectedForPieChart}
+              rawMetrics={rawMetrics}
+              capital={capital}
             />
           </Contents>
 
