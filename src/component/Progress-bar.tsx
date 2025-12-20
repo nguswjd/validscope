@@ -17,10 +17,10 @@ export default function ProgressBar({
   variant = "percent",
   className = "",
 }: ProgressBarProps) {
-  // dollar variant는 값 제한 없음, 나머지는 0~100으로 제한
   const displayValue =
-    variant === "dollar" ? Math.max(0, value) : Math.min(100, Math.max(0, value));
-  // 막대 그래프는 항상 0~100%로 제한
+    variant === "dollar"
+      ? Math.max(0, value)
+      : Math.min(100, Math.max(0, value));
   const barWidth = Math.min(100, Math.max(0, value));
 
   return (

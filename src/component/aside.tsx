@@ -4,7 +4,7 @@ import LogoImage from "../assets/logo.svg";
 
 import BlockchainBtn from "./blockchain-btn";
 import ProgressBar from "./Progress-bar";
-import { Input } from "../components/ui/input";
+import { Input } from "./ui/input";
 
 type Scores = {
   marketBarriers: number;
@@ -35,6 +35,8 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
   >([]);
 
   const [selected, setSelected] = useState<string[]>([]);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+
   const [inputValues, setInputValues] = useState({
     capital: "",
     revenue: "",
@@ -274,9 +276,9 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
   };
 
   const handleSearch = () => {
-    // 자본 입력값 파싱 ($50-$2,000 형식에서 숫자만 추출)
-    const capitalMatch = inputValues.capital.match(/\d+/);
-    const capital = capitalMatch ? parseInt(capitalMatch[0], 10) : 50;
+    // 자본 입력값 파싱 (콤마 제거 후 숫자 추출)
+    const onlyNumber = inputValues.capital.replace(/[^\d]/g, "");
+    const capital = onlyNumber ? parseInt(onlyNumber, 10) : 50;
 
     // 가중치 입력값 파싱 (0~100 범위로 제한)
     const revenue = Math.max(
@@ -303,6 +305,13 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
       onCapitalChange(capital);
     }
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <aside className="w-111 h-dvh border-r-2 border-gray-2 flex flex-col fixed left-0 top-0 z-10 bg-white">
       <header className="bg-white px-4 pt-4 pb-3 flex flex-col justify-between w-full gap-2">
@@ -315,6 +324,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
             <Input
               placeholder="$50-$2,000 사이의 자본을 입력하세요."
               value={inputValues.capital}
+              onKeyDown={handleKeyDown}
               onChange={(e) => {
                 const onlyNumber = e.target.value.replace(/[^\d]/g, "");
                 const formatted = onlyNumber
@@ -356,6 +366,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
               step={1}
               placeholder="00"
               value={inputValues.revenue}
+              onKeyDown={handleKeyDown}
               onChange={(e) => {
                 const value = Math.max(
                   0,
@@ -377,6 +388,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
               step={1}
               placeholder="00"
               value={inputValues.stability}
+              onKeyDown={handleKeyDown}
               onChange={(e) => {
                 const value = Math.max(
                   0,
@@ -398,6 +410,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
               step={1}
               placeholder="00"
               value={inputValues.marketBarriers}
+              onKeyDown={handleKeyDown}
               onChange={(e) => {
                 const value = Math.max(
                   0,
@@ -416,8 +429,13 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
         <nav>
           <ul className="flex flex-col gap-2">
             {blockchains.map((item, idx) => (
-              <li key={idx} className="flex items-center">
-                <p className="w-5 text-center text-black">{idx + 1}</p>
+              <li
+                key={idx}
+                className="flex items-center"
+                onMouseEnter={() => setHoveredItem(item.name)}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
+                <p className="w-5 text-center text-black mr-2">{idx + 1}</p>
                 <BlockchainBtn
                   name={item.name}
                   scores={item.scores}
@@ -432,10 +450,16 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
       </section>
       <footer className="bg-white p-5 flex flex-col gap-4">
         {(() => {
-          // 선택이 없을 때는 0으로 표시
-          if (selected.length === 0) {
+          const activeName =
+            hoveredItem ||
+            (selected.length > 0 ? selected[selected.length - 1] : null);
+
+          const NameDisplay = <p>{activeName || "Blockchain"}</p>;
+
+          if (!activeName) {
             return (
               <>
+                {NameDisplay}
                 <ProgressBar value={0} label="수익" variant="dollar" />
                 <ProgressBar value={0} label="안정성" variant="score" />
                 <ProgressBar value={0} label="진입장벽" variant="score" />
@@ -443,15 +467,14 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
             );
           }
 
-          // 가장 최근에 선택한 블록체인 (selected 배열의 마지막 요소)
-          const lastSelectedName = selected[selected.length - 1];
           const targetBlockchain = blockchains.find(
-            (b) => b.name === lastSelectedName
+            (b) => b.name === activeName
           );
 
           if (!targetBlockchain) {
             return (
               <>
+                {NameDisplay}
                 <ProgressBar value={0} label="수익" variant="dollar" />
                 <ProgressBar value={0} label="안정성" variant="score" />
                 <ProgressBar value={0} label="진입장벽" variant="score" />
@@ -459,7 +482,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
             );
           }
 
-          // 가중치 정규화 비율 계산
+          // 가중치 합이 100이 되도록 정규화 (비율 유지)
           const weightSum =
             searchParams.revenue +
             searchParams.stability +
@@ -484,9 +507,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
             100;
 
           // APR 계산 (rawMetrics에서 가져옴)
-          const targetRawMetric = rawMetrics.find(
-            (m) => m.name === lastSelectedName
-          );
+          const targetRawMetric = rawMetrics.find((m) => m.name === activeName);
           const apr = targetRawMetric?.data["apr"] ?? 0;
 
           // 수익 금액 계산: 자본(C) * APR
@@ -499,6 +520,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
 
           return (
             <>
+              {NameDisplay}
               <ProgressBar
                 value={roundedProfitAmount}
             label="수익"

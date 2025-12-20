@@ -11,7 +11,7 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "./components/ui/select";
+} from "./component/ui/select";
 
 type Scores = {
   marketBarriers: number;

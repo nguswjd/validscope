@@ -2,12 +2,74 @@ import { useState } from "react";
 import ReactECharts from "echarts-for-react";
 import * as echarts from "echarts";
 
+import agoricImg from "../../assets/blockchains/agoric.png";
+import akashImg from "../../assets/blockchains/akash.png";
+import altheaImg from "../../assets/blockchains/althea.png";
+import archwayImg from "../../assets/blockchains/archway.png";
+import atomoneImg from "../../assets/blockchains/atomone.png";
+import axelarImg from "../../assets/blockchains/axelar.png";
+import bandImg from "../../assets/blockchains/band.png";
+import celestiaImg from "../../assets/blockchains/celestia.png";
+import chihuahuaImg from "../../assets/blockchains/chihuahua.png";
+import coreumImg from "../../assets/blockchains/coreum.png";
+import cosmosHubImg from "../../assets/blockchains/cosmos_hub.png";
+import dydxImg from "../../assets/blockchains/dydx.png";
+import gravityBridgeImg from "../../assets/blockchains/gravity_bridge.png";
+import humansAiImg from "../../assets/blockchains/humans_ai.png";
+import injectiveImg from "../../assets/blockchains/injective.png";
+import kavaImg from "../../assets/blockchains/kava.png";
+import mantraImg from "../../assets/blockchains/mantra.png";
+import mediblocImg from "../../assets/blockchains/medibloc.png";
+import milkywayImg from "../../assets/blockchains/milkyway.png";
+import nillionImg from "../../assets/blockchains/nillion.png";
+import osmosisImg from "../../assets/blockchains/osmosis.png";
+import persistenceImg from "../../assets/blockchains/persistence.png";
+import regenImg from "../../assets/blockchains/regen.png";
+import secretImg from "../../assets/blockchains/secret.png";
+import shentuImg from "../../assets/blockchains/shentu.png";
+import stargazeImg from "../../assets/blockchains/stargaze.png";
+import terraImg from "../../assets/blockchains/terra.png";
+import xionImg from "../../assets/blockchains/xion.png";
+import xplaImg from "../../assets/blockchains/xpla.png";
+
+const blockchainImages: Record<string, string> = {
+  "COSMOS HUB": cosmosHubImg,
+  ATOMONE: atomoneImg,
+  OSMOSIS: osmosisImg,
+  AKASH: akashImg,
+  AGORIC: agoricImg,
+  ALTHEA: altheaImg,
+  ARCHWAY: archwayImg,
+  AXELAR: axelarImg,
+  BAND: bandImg,
+  CELESTIA: celestiaImg,
+  CHIHUAHUA: chihuahuaImg,
+  COREUM: coreumImg,
+  DYDX: dydxImg,
+  "GRAVITY BRIDGE": gravityBridgeImg,
+  HUMANS: humansAiImg,
+  INJECTIVE: injectiveImg,
+  KAVA: kavaImg,
+  MANTRA: mantraImg,
+  MEDIBLOC: mediblocImg,
+  MILKYWAY: milkywayImg,
+  NILLION: nillionImg,
+  PERSISTENCE: persistenceImg,
+  REGEN: regenImg,
+  SECRET: secretImg,
+  SHENTU: shentuImg,
+  STARGAZE: stargazeImg,
+  TERRA: terraImg,
+  XION: xionImg,
+  XPLA: xplaImg,
+};
+
 type Scores = {
   marketBarriers: number;
   networkGovernance: number;
   profitability: number;
-  rawMarketBarriers?: number; // 원본 점수 (0~100)
-  rawProfitability?: number; // 원본 점수 (0~100)
+  rawMarketBarriers?: number;
+  rawProfitability?: number;
 };
 
 type BubbleChartProps = {
@@ -37,59 +99,65 @@ export default function BubbleChart({
 }: BubbleChartProps) {
   const colors = ["#5da4ef", "#64b875", "#785bbc", "#f24949"];
 
-  // X축 데이터의 최소값과 최대값 계산 (min-max 정규화용)
   const xValues = data.map(
     (b) => b.scores.rawMarketBarriers ?? b.scores.marketBarriers
   );
   const minX = Math.min(...xValues);
   const maxX = Math.max(...xValues);
-  const rangeX = maxX - minX || 1; // 0으로 나누는 것 방지
+  const rangeX = maxX - minX || 1;
 
-  // Y축 데이터의 최소값과 최대값 계산 (min-max 정규화용)
   const yValues = data.map(
     (b) => b.scores.rawProfitability ?? b.scores.profitability
   );
   const minY = Math.min(...yValues);
   const maxY = Math.max(...yValues);
-  const rangeY = maxY - minY || 1; // 0으로 나누는 것 방지
+  const rangeY = maxY - minY || 1;
 
   const chartData = data.map((b) => {
     const selectedIndex = selectedBlockchains.findIndex(
       (selected) => selected.name === b.name
     );
-    let color;
+    const isSelected = selectedIndex !== -1;
+    const isAnySelected = selectedBlockchains.length > 0;
 
-    if (selectedBlockchains.length === 0) {
-      color = "#5da4ef";
+    let borderColor;
+    if (isSelected) {
+      borderColor = colors[selectedIndex];
+    } else if (isAnySelected) {
+      borderColor = "rgba(0,0,0,0.1)";
     } else {
-      color =
-        selectedIndex !== -1
-          ? colors[selectedIndex]
-          : "rgba(93, 164, 239, 0.3)";
+      borderColor = "#5da4ef";
     }
 
-    // 원본 점수 (0~100 범위)
+    const opacity = !isAnySelected || isSelected ? 1 : 0.25;
+    const borderWidth = isSelected ? 3 : 1;
+
     const xRaw = b.scores.rawMarketBarriers ?? b.scores.marketBarriers;
     const yRaw = b.scores.rawProfitability ?? b.scores.profitability;
 
-    // X축과 Y축에 min-max 정규화 적용 (0~100 범위로 스케일링)
     const xValue = ((xRaw - minX) / rangeX) * 100;
     const yValue = ((yRaw - minY) / rangeY) * 100;
 
-    // 버블 크기는 2배로 표시하되, hint에는 원래 값 표시
-    const bubbleSize = b.scores.networkGovernance * 100; // 2배로 표시
-    const bubbleOriginalValue = b.scores.networkGovernance; // 원래 값 (hint용)
+    const bubbleSize = b.scores.networkGovernance * 100;
+    const bubbleOriginalValue = b.scores.networkGovernance;
 
-    return [
-      xValue, // X축 min-max 정규화된 값
-      yValue, // Y축 min-max 정규화된 값
-      bubbleSize, // 버블 scale (2배)
-      b.name,
-      color,
-      xRaw, // 원본 X값 (hint 표시용)
-      yRaw, // 원본 Y값 (hint 표시용)
-      bubbleOriginalValue, // 원본 버블 값 (hint 표시용)
-    ];
+    const imgSrc = blockchainImages[b.name];
+
+    return {
+      value: [
+        xValue,
+        yValue,
+        bubbleSize,
+        b.name,
+        borderColor,
+        opacity,
+        borderWidth,
+        xRaw,
+        yRaw,
+        bubbleOriginalValue,
+      ],
+      imgSrc: imgSrc,
+    };
   });
 
   const [hintValues, setHintValues] = useState({
@@ -109,7 +177,10 @@ export default function BubbleChart({
         color: "#111111",
       },
     },
-    grid: { left: 40, right: 40, top: 40, bottom: 40 },
+    tooltip: {
+      show: false,
+    },
+    grid: { left: 40, right: 40, top: 60, bottom: 40 },
     xAxis: {
       name: "gevDovScore",
       nameLocation: "center",
@@ -139,20 +210,40 @@ export default function BubbleChart({
     },
     series: [
       {
+        name: "Background Circle",
         type: "scatter",
-        data: chartData,
-        symbolSize: (d: any[]) => Math.sqrt(d[2]),
-        emphasis: {
-          focus: "series",
-          label: {
-            show: true,
-            formatter: (param: any) => param.data[3],
-            position: "top",
+        data: chartData.map((d) => ({
+          value: d.value,
+          itemStyle: {
+            color: "#ffffff",
+            borderColor: d.value[4],
+            borderWidth: d.value[6],
+            opacity: d.value[5],
           },
+        })),
+        symbol: "circle",
+        symbolSize: (d: any[]) => Math.sqrt(d[2]) * 1.5,
+        label: { show: false },
+        z: 1,
+        animation: true,
+      },
+      {
+        name: "Logo Image",
+        type: "scatter",
+        data: chartData.map((d) => ({
+          value: d.value,
+          symbol: d.imgSrc ? `image://${d.imgSrc}` : "circle",
+          itemStyle: {
+            opacity: d.value[5],
+          },
+        })),
+        symbolSize: (d: any[]) => Math.sqrt(d[2]) * 1.5 * 0.7,
+        label: { show: false },
+        emphasis: {
+          scale: true,
+          focus: "series",
         },
-        itemStyle: {
-          color: (params: any) => params.data[4],
-        },
+        z: 2,
       },
     ],
   };
@@ -160,14 +251,19 @@ export default function BubbleChart({
   const onEvents = {
     click: (params: any) => {
       if (!params?.data) return;
-      const blockchainName = params.data[3];
+      const blockchainName = params.data.value[3];
       onSelectBlockchain(blockchainName);
     },
     mouseover: (params: any) => {
       if (!params?.data) return;
-      const [x, y, bubble, , , originalX, originalY, originalBubble] =
-        params.data;
-      // hint에는 원래 값 표시
+      const values = params.data.value;
+      const originalX = values[7];
+      const originalY = values[8];
+      const originalBubble = values[9];
+      const x = values[0];
+      const y = values[1];
+      const bubble = values[2];
+
       setHintValues({
         x: originalX !== undefined ? originalX.toFixed(2) : x.toFixed(2),
         y: originalY !== undefined ? originalY.toFixed(2) : y.toFixed(2),
