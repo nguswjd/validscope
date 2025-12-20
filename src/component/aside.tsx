@@ -33,6 +33,8 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
   >([]);
 
   const [selected, setSelected] = useState<string[]>([]);
+  const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+
   const [inputValues, setInputValues] = useState({
     capital: "",
     revenue: "",
@@ -408,7 +410,12 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
         <nav>
           <ul className="flex flex-col gap-2">
             {blockchains.map((item, idx) => (
-              <li key={idx} className="flex items-center">
+              <li
+                key={idx}
+                className="flex items-center"
+                onMouseEnter={() => setHoveredItem(item.name)}
+                onMouseLeave={() => setHoveredItem(null)}
+              >
                 <p className="w-5 text-center text-black">{idx + 1}</p>
                 <BlockchainBtn
                   name={item.name}
@@ -424,10 +431,16 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
       </section>
       <footer className="bg-white p-5 flex flex-col gap-4">
         {(() => {
-          // 선택이 없을 때는 0으로 표시
-          if (selected.length === 0) {
+          const activeName =
+            hoveredItem ||
+            (selected.length > 0 ? selected[selected.length - 1] : null);
+
+          const NameDisplay = <p>{activeName || "Blockchain"}</p>;
+
+          if (!activeName) {
             return (
               <>
+                {NameDisplay}
                 <ProgressBar value={0} label="수익" variant="dollar" />
                 <ProgressBar value={0} label="안정성" variant="score" />
                 <ProgressBar value={0} label="진입장벽" variant="score" />
@@ -435,15 +448,14 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
             );
           }
 
-          // 가장 최근에 선택한 블록체인 (selected 배열의 마지막 요소)
-          const lastSelectedName = selected[selected.length - 1];
           const targetBlockchain = blockchains.find(
-            (b) => b.name === lastSelectedName
+            (b) => b.name === activeName
           );
 
           if (!targetBlockchain) {
             return (
               <>
+                {NameDisplay}
                 <ProgressBar value={0} label="수익" variant="dollar" />
                 <ProgressBar value={0} label="안정성" variant="score" />
                 <ProgressBar value={0} label="진입장벽" variant="score" />
@@ -476,9 +488,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
             100;
 
           // APR 계산 (rawMetrics에서 가져옴)
-          const targetRawMetric = rawMetrics.find(
-            (m) => m.name === lastSelectedName
-          );
+          const targetRawMetric = rawMetrics.find((m) => m.name === activeName);
           const apr = targetRawMetric?.data["apr"] ?? 0;
 
           // 수익 금액 계산: 자본(C) * APR
@@ -491,6 +501,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
 
           return (
             <>
+              {NameDisplay}
               <ProgressBar
                 value={roundedProfitAmount}
                 label="수익"
