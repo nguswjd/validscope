@@ -47,11 +47,17 @@ function zScore(value: number, mean: number, stdDev: number): number {
 }
 
 function LineChart({ allBlockchains, selectedBlockchainName }: LineChartProps) {
-  const { normalDistributionData, averageZScore, xRange } = useMemo(() => {
+  const { normalDistributionData, indicatorZScores, xRange } = useMemo(() => {
     if (!allBlockchains || allBlockchains.length === 0) {
       return {
         normalDistributionData: [],
-        averageZScore: 0,
+        indicatorZScores: {
+          influence: 0,
+          entry: 0,
+          profit: 0,
+          network: 0,
+          govDev: 0,
+        },
         xRange: [],
       };
     }
@@ -101,71 +107,71 @@ function LineChart({ allBlockchains, selectedBlockchainName }: LineChartProps) {
       (b) => b.name === selectedBlockchainName
     );
 
-    let zScores: number[] = [];
+    let entryZ = 0;
+    let influenceZ = 0;
+    let networkZ = 0;
+    let govDevZ = 0;
+    let profitZ = 0;
+
     if (selectedBlockchain) {
       const scores = selectedBlockchain.scores;
-      const entryZ = zScore(
+      entryZ = zScore(
         scores.rawEntryScore ?? 0,
         stats.entry.mean,
         stats.entry.stdDev
       );
-      const influenceZ = zScore(
+      influenceZ = zScore(
         scores.rawInfluenceScore ?? 0,
         stats.influence.mean,
         stats.influence.stdDev
       );
-      const networkZ = zScore(
+      networkZ = zScore(
         scores.rawNetworkScore ?? 0,
         stats.network.mean,
         stats.network.stdDev
       );
-      const govDevZ = zScore(
+      govDevZ = zScore(
         scores.rawGovDevScore ?? 0,
         stats.govDev.mean,
         stats.govDev.stdDev
       );
-      const profitZ = zScore(
+      profitZ = zScore(
         scores.rawProfitScore ?? 0,
         stats.profit.mean,
         stats.profit.stdDev
       );
-
-      // Step 4: 부정적 지표는 Z-score 부호 반전
-      // Entry_score는 높을수록 나쁨 (진입장벽이 높음) -> 부정적 지표
-      zScores = [
-        -entryZ, // Entry_score는 부정적 지표
-        influenceZ, // Influence_score는 긍정적 지표
-        networkZ, // Network_score는 긍정적 지표
-        govDevZ, // GovDev_score는 긍정적 지표
-        profitZ, // Profit_score는 긍정적 지표
-      ];
-    } else {
-      zScores = [0, 0, 0, 0, 0];
     }
 
-    // 종합 Z-score 계산 (5개 지표의 평균)
-    const averageZScore =
-      zScores.length > 0
-        ? zScores.reduce((sum, z) => sum + z, 0) / zScores.length
-        : 0;
+    // 각 지표별 Z-score (순서: 영향력, 진입장벽, 수익, 안정성, 개발 거버넌스)
+    const indicatorZScores = {
+      influence: influenceZ, // 영향력
+      entry: -entryZ, // 진입장벽 (부정적 지표이므로 부호 반전)
+      profit: profitZ, // 수익
+      network: networkZ, // 안정성
+      govDev: govDevZ, // 개발 거버넌스
+    };
 
-    // Step 5: 정규분포 데이터 가공 (x_range = [-2, +2])
+    // Step 5: 정규분포 데이터 가공 (x_range = [-3, +3])
     const xRange: number[] = [];
     const normalDistributionData: number[] = [];
     const step = 0.1;
-    for (let x = -2; x <= 2; x += step) {
+    for (let x = -3; x <= 3; x += step) {
       xRange.push(Number(x.toFixed(1)));
       normalDistributionData.push(normalDistribution(x));
     }
 
     return {
       normalDistributionData,
-      averageZScore,
+      indicatorZScores,
       xRange,
     };
   }, [allBlockchains, selectedBlockchainName]);
 
   if (!allBlockchains || allBlockchains.length === 0) return null;
+
+  // 선택된 블록체인이 없으면 점을 표시하지 않음
+  const hasSelectedBlockchain =
+    selectedBlockchainName && selectedBlockchainName.trim() !== "";
 
   // 표준 정규분포의 백분위수 값
   // 25th percentile ≈ -0.674
@@ -219,31 +225,148 @@ function LineChart({ allBlockchains, selectedBlockchainName }: LineChartProps) {
     },
   };
 
-  // 종합 점 시리즈 생성 (선택한 블록체인의 종합 위치)
-  const dotSeries = {
-    name: selectedBlockchainName || "Selected",
-    type: "scatter",
-    data: [[averageZScore, normalDistribution(averageZScore)]],
-    symbolSize: 15,
-    itemStyle: {
-      color: "#1f489b",
-    },
-    label: {
-      show: true,
-      position: "top",
-      formatter: selectedBlockchainName || "",
-      fontSize: 12,
-      color: "#1f489b",
-      fontWeight: "bold",
-    },
-  };
+  // 5개 지표별 점 시리즈 생성
+  const dotSeries = hasSelectedBlockchain
+    ? [
+        {
+          name: "Influence",
+          type: "scatter",
+          data: [
+            [
+              indicatorZScores.influence,
+              normalDistribution(indicatorZScores.influence),
+            ],
+          ],
+          symbolSize: 10,
+          itemStyle: {
+            color: "#ffffff",
+            borderColor: "#4896ec",
+            borderWidth: 2,
+            shadowBlur: 15,
+            shadowColor: "rgba(72, 150, 236, 0.5)",
+          },
+          label: {
+            show: true,
+            position: "top",
+            formatter: "Influence",
+            fontSize: 10,
+            color: "#1f489b",
+            fontWeight: "normal",
+          },
+        },
+        {
+          name: "Entry",
+          type: "scatter",
+          data: [
+            [
+              indicatorZScores.entry,
+              normalDistribution(indicatorZScores.entry),
+            ],
+          ],
+          symbolSize: 10,
+          itemStyle: {
+            color: "#ffffff",
+            borderColor: "#4896ec",
+            borderWidth: 2,
+            shadowBlur: 15,
+            shadowColor: "rgba(72, 150, 236, 0.5)",
+          },
+          label: {
+            show: true,
+            position: "top",
+            formatter: "Entry",
+            fontSize: 10,
+            color: "#1f489b",
+            fontWeight: "normal",
+          },
+        },
+        {
+          name: "Profit",
+          type: "scatter",
+          data: [
+            [
+              indicatorZScores.profit,
+              normalDistribution(indicatorZScores.profit),
+            ],
+          ],
+          symbolSize: 10,
+          itemStyle: {
+            color: "#ffffff",
+            borderColor: "#4896ec",
+            borderWidth: 2,
+            shadowBlur: 15,
+            shadowColor: "rgba(72, 150, 236, 0.5)",
+          },
+          label: {
+            show: true,
+            position: "top",
+            formatter: "Profit",
+            fontSize: 10,
+            color: "#1f489b",
+            fontWeight: "normal",
+          },
+        },
+        {
+          name: "Network",
+          type: "scatter",
+          data: [
+            [
+              indicatorZScores.network,
+              normalDistribution(indicatorZScores.network),
+            ],
+          ],
+          symbolSize: 10,
+          itemStyle: {
+            color: "#ffffff",
+            borderColor: "#4896ec",
+            borderWidth: 2,
+            shadowBlur: 15,
+            shadowColor: "rgba(72, 150, 236, 0.5)",
+          },
+          label: {
+            show: true,
+            position: "top",
+            formatter: "Network",
+            fontSize: 10,
+            color: "#1f489b",
+            fontWeight: "normal",
+          },
+        },
+        {
+          name: "GovDev",
+          type: "scatter",
+          data: [
+            [
+              indicatorZScores.govDev,
+              normalDistribution(indicatorZScores.govDev),
+            ],
+          ],
+          symbolSize: 10,
+          itemStyle: {
+            color: "#ffffff",
+            borderColor: "#4896ec",
+            borderWidth: 2,
+            shadowBlur: 15,
+            shadowColor: "rgba(72, 150, 236, 0.5)",
+          },
+          label: {
+            show: true,
+            position: "top",
+            formatter: "GovDev",
+            fontSize: 10,
+            color: "#1f489b",
+            fontWeight: "normal",
+          },
+        },
+      ]
+    : [];
 
   const option = {
     grid: { left: 50, right: 50, top: 50, bottom: 50 },
     xAxis: {
       type: "value",
-      min: -2,
-      max: 2,
+      min: -3,
+      max: 3,
       name: "Z-score",
       nameLocation: "middle",
       nameGap: 30,
@@ -274,15 +397,14 @@ function LineChart({ allBlockchains, selectedBlockchainName }: LineChartProps) {
       trigger: "item",
       formatter: (params: any) => {
         if (params.seriesType === "scatter") {
-          return `${
-            params.seriesName
-          }<br/>종합 Z-score: ${averageZScore.toFixed(2)}`;
+          const zScoreValue = params.data[0];
+          return `${params.seriesName}<br/>Z-score: ${zScoreValue.toFixed(2)}`;
         }
         return "";
       },
     },
     legend: { show: false },
-    series: [distributionSeries, dotSeries],
+    series: [distributionSeries, ...dotSeries],
   };
 
   return (

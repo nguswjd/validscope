@@ -109,7 +109,7 @@ export default function BubbleChart({
         color: "#111111",
       },
     },
-    grid: { left: 40, right: 40, top: 40, bottom: 40 },
+    grid: { left: 40, right: 40, top: 60, bottom: 40 },
     xAxis: {
       name: "gevDovScore",
       nameLocation: "center",
@@ -142,12 +142,13 @@ export default function BubbleChart({
         type: "scatter",
         data: chartData,
         symbolSize: (d: any[]) => Math.sqrt(d[2]),
+        label: {
+          show: false,
+        },
         emphasis: {
           focus: "series",
           label: {
-            show: true,
-            formatter: (param: any) => param.data[3],
-            position: "top",
+            show: false,
           },
         },
         itemStyle: {
