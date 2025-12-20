@@ -269,9 +269,9 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
   };
 
   const handleSearch = () => {
-    // 자본 입력값 파싱 ($50-$2,000 형식에서 숫자만 추출)
-    const capitalMatch = inputValues.capital.match(/\d+/);
-    const capital = capitalMatch ? parseInt(capitalMatch[0], 10) : 50;
+    // 자본 입력값 파싱 (콤마 제거 후 숫자 추출)
+    const onlyNumber = inputValues.capital.replace(/[^\d]/g, "");
+    const capital = onlyNumber ? parseInt(onlyNumber, 10) : 50;
 
     // 가중치 입력값 파싱 (0~100 범위로 제한)
     const revenue = Math.max(
