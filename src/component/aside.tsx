@@ -297,6 +297,13 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
       isInitial: false, // Search 버튼을 눌렀으므로 초기 상태 아님
     });
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
+
   return (
     <aside className="w-111 h-dvh border-r-2 border-gray-2 flex flex-col fixed left-0 top-0 z-10 bg-white">
       <header className="bg-white px-4 pt-4 pb-3 flex flex-col justify-between w-full gap-2">
@@ -309,6 +316,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
             <Input
               placeholder="$50-$2,000 사이의 자본을 입력하세요."
               value={inputValues.capital}
+              onKeyDown={handleKeyDown}
               onChange={(e) => {
                 const onlyNumber = e.target.value.replace(/[^\d]/g, "");
                 const formatted = onlyNumber
@@ -350,6 +358,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
               step={1}
               placeholder="00"
               value={inputValues.revenue}
+              onKeyDown={handleKeyDown}
               onChange={(e) => {
                 const value = Math.max(
                   0,
@@ -371,6 +380,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
               step={1}
               placeholder="00"
               value={inputValues.stability}
+              onKeyDown={handleKeyDown}
               onChange={(e) => {
                 const value = Math.max(
                   0,
@@ -392,6 +402,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
               step={1}
               placeholder="00"
               value={inputValues.marketBarriers}
+              onKeyDown={handleKeyDown}
               onChange={(e) => {
                 const value = Math.max(
                   0,
@@ -463,7 +474,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad }: AsideProps) {
             );
           }
 
-          // 가중치 정규화 비율 계산
+          // 가중치 합이 100이 되도록 정규화 (비율 유지)
           const weightSum =
             searchParams.revenue +
             searchParams.stability +
