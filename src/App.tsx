@@ -126,12 +126,8 @@ export default function App() {
               ]}
             />
             <LineChart
-              data={[
-                {
-                  name: selectedForPieChart || "",
-                  value: [],
-                },
-              ]}
+              allBlockchains={allBlockchains}
+              selectedBlockchainName={selectedForPieChart}
             />
           </Contents>
 
