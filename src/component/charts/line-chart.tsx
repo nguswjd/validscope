@@ -290,9 +290,9 @@ function LineChart({
     const annualProfit = capital * apr;
 
     const makeRow = (label: string, value: string | number) => {
-      return `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
-        <span style="color: #666; margin-right: 8px;">${label}</span>
-        <span style="font-weight: 500; color: #000; text-align: right;">${value}</span>
+      return `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 12px; color: #999999; margin-right: 8px;">${label}</span>
+        <span style="font-size: 14px; font-weight: 500; color: #111111; text-align: right;">${value}</span>
       </div>`;
     };
 
