@@ -456,7 +456,11 @@ export default function Aside({
                     mass: 1,
                   }}
                   className="flex items-center bg-white"
-                  onMouseEnter={() => setHoveredItem(item.name)}
+                  onMouseEnter={() => {
+                    if (!searchParams.isInitial) {
+                      setHoveredItem(item.name);
+                    }
+                  }}
                   onMouseLeave={() => setHoveredItem(null)}
                 >
                   <p className="w-5 text-center text-black mr-2">{idx + 1}</p>
