@@ -26,6 +26,7 @@ type AsideProps = {
     rawMetrics: { name: string; data: Record<string, number> }[]
   ) => void;
   onCapitalChange?: (capital: number) => void;
+  externalHoveredItem?: string | null;
 };
 
 export default function Aside({
@@ -33,6 +34,7 @@ export default function Aside({
   onAllBlockchainsLoad,
   onRawMetricsLoad,
   onCapitalChange,
+  externalHoveredItem,
 }: AsideProps) {
   const [rawMetrics, setRawMetrics] = useState<
     { name: string; data: Record<string, number> }[]
@@ -464,6 +466,7 @@ export default function Aside({
       <footer className="bg-white p-5 flex flex-col gap-4">
         {(() => {
           const activeName =
+            externalHoveredItem ||
             hoveredItem ||
             (selected.length > 0 ? selected[selected.length - 1] : null);
 

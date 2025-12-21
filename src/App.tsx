@@ -42,6 +42,9 @@ export default function App() {
     { name: string; data: Record<string, number> }[]
   >([]);
   const [capital, setCapital] = useState<number>(50);
+  const [hoveredBlockchain, setHoveredBlockchain] = useState<string | null>(
+    null
+  );
 
   const handleSelectBlockchain = (name: string) => {
     const blockchain = selectedBlockchains.find((b) => b.name === name);
@@ -69,6 +72,7 @@ export default function App() {
         onAllBlockchainsLoad={setAllBlockchains}
         onRawMetricsLoad={setRawMetrics}
         onCapitalChange={setCapital}
+        externalHoveredItem={hoveredBlockchain}
       />
       <main className="ml-111 flex flex-col gap-5 p-5">
         <div className="flex h-110 gap-5">
@@ -82,6 +86,7 @@ export default function App() {
               data={selectedBlockchains}
               onSelectBlockchain={handleSelectBlockchain}
               selectedBlockchains={selectedForRadar}
+              onHover={setHoveredBlockchain}
             />
           </Contents>
           <Contents
