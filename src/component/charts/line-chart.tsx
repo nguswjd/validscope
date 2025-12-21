@@ -151,11 +151,11 @@ function LineChart({
 
     // 각 지표별 Z-score (순서: 영향력, 진입장벽, 수익, 안정성, 개발 거버넌스)
     const indicatorZScores = {
-      influence: influenceZ, // 영향력
-      entry: -entryZ, // 진입장벽 (부정적 지표이므로 부호 반전)
-      profit: profitZ, // 수익
-      network: networkZ, // 안정성
-      govDev: govDevZ, // 개발 거버넌스
+      influence: influenceZ,
+      entry: -entryZ,
+      profit: profitZ,
+      network: networkZ,
+      govDev: govDevZ,
     };
 
     // Step 5: 정규분포 데이터 가공 (x_range = [-3, +3])
@@ -176,20 +176,16 @@ function LineChart({
 
   if (!allBlockchains || allBlockchains.length === 0) return null;
 
-  // 선택된 블록체인이 없으면 점을 표시하지 않음
   const hasSelectedBlockchain =
     selectedBlockchainName && selectedBlockchainName.trim() !== "";
 
-  // 표준 정규분포의 백분위수 값
-  const percentile25 = -0.674; // 하위 25th percentile
-  const percentile75 = 0.674; // 상위 25th percentile (75th percentile)
+  const percentile25 = -0.674;
+  const percentile75 = 0.674;
 
-  // 선택된 블록체인의 rawMetrics 찾기
   const selectedRawMetrics = rawMetrics.find(
     (m) => m.name === selectedBlockchainName
   );
 
-  // Tooltip 정보 생성 함수
   const getTooltipInfo = (indicatorName: string) => {
     if (!selectedRawMetrics) return "";
 
@@ -203,10 +199,9 @@ function LineChart({
     const missRatio = metrics["miss_ratio"] ?? 0;
     const hhi = metrics["hhi_token"] ?? 0;
     const apr = metrics["apr"] ?? 0;
-    const uptime = metrics["uptime"] ?? null; // Uptime 데이터 (없을 수 있음)
-    const activeAddressesTrend = metrics["active_addresses_trend"] ?? null; // Active Addresses 추세 (없을 수 있음, "increase" | "stable" | "decrease")
+    const uptime = metrics["uptime"] ?? null;
+    const activeAddressesTrend = metrics["active_addresses_trend"] ?? null;
 
-    // 개발자 활동 색상 및 텍스트 결정 (원형 이모지)
     let devActivityText = "";
     if (govTurnout * 100 >= 50) {
       devActivityText = "🟢꾸준함";
@@ -216,8 +211,6 @@ function LineChart({
       devActivityText = "🔴활동 없음";
     }
 
-    // 사용자 지분 비율 계산 (capital과 totalStaked가 모두 존재하고 0보다 큰 경우에만 계산)
-    // capital과 totalStaked는 같은 단위(토큰)로 가정
     const userShare =
       totalStaked > 0 && capital && capital > 0
         ? (capital / totalStaked) * 100
@@ -227,23 +220,20 @@ function LineChart({
         ? (capital / totalStaked) * 100
         : 0;
 
-    // Cutoff 상태 텍스트 결정 (사용자 자본과 cutoff 비교)
     let cutoffText = "";
     const cutoffNum = Number(cutoff) || 0;
     const capitalNum = Number(capital) || 0;
 
     if (cutoffNum > 0) {
-      // 사용자 자본과 cutoff 비교
       if (capitalNum > cutoffNum) {
-        cutoffText = "🟢가능"; // C > Cutoff
+        cutoffText = "🟢가능";
       } else if (capitalNum < cutoffNum) {
-        cutoffText = "🔴진입불가"; // C < Cutoff
+        cutoffText = "🔴진입불가";
       } else {
-        cutoffText = "🟡주의"; // C ≈ Cutoff
+        cutoffText = "🟡주의";
       }
     }
 
-    // Block Miss Ratio 상태 결정
     const missRatioPercent = missRatio * 100;
     let blockMissRatioStatus = "";
     if (missRatioPercent <= 1) {
@@ -254,7 +244,6 @@ function LineChart({
       blockMissRatioStatus = "🔴위험";
     }
 
-    // HHI 상태 결정
     let hhiStatus = "";
     if (hhi < 0.1) {
       hhiStatus = "🟢분산 양호";
@@ -264,7 +253,6 @@ function LineChart({
       hhiStatus = "🔴고집중";
     }
 
-    // Uptime 상태 결정
     let uptimeStatus = "";
     if (uptime !== null && uptime !== undefined) {
       if (uptime >= 99) {
@@ -276,7 +264,6 @@ function LineChart({
       }
     }
 
-    // Active Addresses 추세 상태 결정
     let activeAddressesStatus = "";
     if (activeAddressesTrend !== null && activeAddressesTrend !== undefined) {
       const trend = String(activeAddressesTrend).toLowerCase();
@@ -289,16 +276,12 @@ function LineChart({
       }
     }
 
-    // 연간 예상 수익 계산
     const annualProfit = capital * apr;
 
     let info = "";
 
-    // 각 지표별로 해당하는 정보만 표시
     if (indicatorName === "Influence") {
-      // 영향력: TotalStaked, Top-k, Nakamoto Coefficient, VotingPower
       info += `TotalStaked ${totalStaked.toLocaleString()}<br/>`;
-      // userShare가 매우 작을 수 있으므로 소수점 6자리까지 표시
       const userShareFormatted =
         userShare > 0 && userShare < 0.0001
           ? userShare.toFixed(6)
@@ -307,21 +290,17 @@ function LineChart({
         2
       )}%/${userShareFormatted}%<br/>`;
       info += `Nakamoto Coefficient 🛡${nakamoto33} validators<br/>`;
-      // votingPower가 매우 작을 수 있으므로 소수점 6자리까지 표시
       const votingPowerFormatted =
         votingPower > 0 && votingPower < 0.01
           ? votingPower.toFixed(6)
           : votingPower.toFixed(2);
       info += `VotingPower 🔈${votingPowerFormatted}%`;
     } else if (indicatorName === "Entry") {
-      // 진입장벽: Cutoff, Active set size
       info += `Cutoff ${cutoffText}<br/>`;
       info += `Active set size ${nact.toLocaleString()}/${nact.toLocaleString()}`;
     } else if (indicatorName === "Profit") {
-      // 수익: 연간 예상 수익
       info += `연간 예상 수익 약 ${annualProfit.toLocaleString()} USD`;
     } else if (indicatorName === "Network") {
-      // 안정성: Block Miss Ratio, Uptime, HHI, Active Addresses
       info += `Block Miss Ratio ${blockMissRatioStatus}<br/>`;
       if (uptimeStatus) {
         info += `Uptime ${uptimeStatus}<br/>`;
@@ -331,7 +310,6 @@ function LineChart({
         info += `Active Addresses ${activeAddressesStatus}`;
       }
     } else if (indicatorName === "GovDev") {
-      // 개발 거버넌스: Governance Participation, 개발자 활동 상태
       info += `Governance Participation 🗳️${(govTurnout * 100).toFixed(
         0
       )}%<br/>`;
@@ -341,13 +319,12 @@ function LineChart({
     return info;
   };
 
-  // 정규분포 곡선 시리즈 생성
   const distributionSeries = {
     name: "Normal Distribution",
     type: "line",
     data: normalDistributionData.map((y, idx) => [xRange[idx], y]),
     smooth: true,
-    showSymbol: false, // 점 표시 안 함
+    showSymbol: false,
     lineStyle: { color: "#4896ec", width: 2 },
     areaStyle: {
       color: {
@@ -363,7 +340,7 @@ function LineChart({
       },
     },
     markLine: {
-      silent: true, // 호버 이벤트 비활성화
+      silent: true,
       data: [
         {
           xAxis: percentile25,
@@ -380,11 +357,26 @@ function LineChart({
     },
   };
 
-  // 5개 지표별 점 시리즈 생성
   const dotSeries = hasSelectedBlockchain
     ? [
         {
           name: "Influence",
+          type: "scatter",
+          data: [
+            [
+              indicatorZScores.influence,
+              normalDistribution(indicatorZScores.influence),
+            ],
+          ],
+          symbolSize: 30,
+          itemStyle: {
+            color: "transparent",
+            borderColor: "transparent",
+          },
+          z: 1,
+        },
+        {
+          name: "Influence_visible",
           type: "scatter",
           data: [
             [
@@ -407,11 +399,31 @@ function LineChart({
             fontSize: 10,
             color: "#1f489b",
             fontWeight: "normal",
-            triggerEvent: false, // label 호버 시 이벤트 발생 안 함
+            padding: [10, 15],
           },
+          tooltip: {
+            show: false,
+          },
+          z: 2,
         },
         {
           name: "Entry",
+          type: "scatter",
+          data: [
+            [
+              indicatorZScores.entry,
+              normalDistribution(indicatorZScores.entry),
+            ],
+          ],
+          symbolSize: 30,
+          itemStyle: {
+            color: "transparent",
+            borderColor: "transparent",
+          },
+          z: 1,
+        },
+        {
+          name: "Entry_visible",
           type: "scatter",
           data: [
             [
@@ -434,11 +446,31 @@ function LineChart({
             fontSize: 10,
             color: "#1f489b",
             fontWeight: "normal",
-            triggerEvent: false, // label 호버 시 이벤트 발생 안 함
+            padding: [10, 15],
           },
+          tooltip: {
+            show: false,
+          },
+          z: 2,
         },
         {
           name: "Profit",
+          type: "scatter",
+          data: [
+            [
+              indicatorZScores.profit,
+              normalDistribution(indicatorZScores.profit),
+            ],
+          ],
+          symbolSize: 30,
+          itemStyle: {
+            color: "transparent",
+            borderColor: "transparent",
+          },
+          z: 1,
+        },
+        {
+          name: "Profit_visible",
           type: "scatter",
           data: [
             [
@@ -461,11 +493,31 @@ function LineChart({
             fontSize: 10,
             color: "#1f489b",
             fontWeight: "normal",
-            triggerEvent: false, // label 호버 시 이벤트 발생 안 함
+            padding: [10, 15],
           },
+          tooltip: {
+            show: false,
+          },
+          z: 2,
         },
         {
           name: "Network",
+          type: "scatter",
+          data: [
+            [
+              indicatorZScores.network,
+              normalDistribution(indicatorZScores.network),
+            ],
+          ],
+          symbolSize: 30,
+          itemStyle: {
+            color: "transparent",
+            borderColor: "transparent",
+          },
+          z: 1,
+        },
+        {
+          name: "Network_visible",
           type: "scatter",
           data: [
             [
@@ -488,11 +540,31 @@ function LineChart({
             fontSize: 10,
             color: "#1f489b",
             fontWeight: "normal",
-            triggerEvent: false, // label 호버 시 이벤트 발생 안 함
+            padding: [10, 15],
           },
+          tooltip: {
+            show: false,
+          },
+          z: 2,
         },
         {
           name: "GovDev",
+          type: "scatter",
+          data: [
+            [
+              indicatorZScores.govDev,
+              normalDistribution(indicatorZScores.govDev),
+            ],
+          ],
+          symbolSize: 30,
+          itemStyle: {
+            color: "transparent",
+            borderColor: "transparent",
+          },
+          z: 1,
+        },
+        {
+          name: "GovDev_visible",
           type: "scatter",
           data: [
             [
@@ -515,8 +587,12 @@ function LineChart({
             fontSize: 10,
             color: "#1f489b",
             fontWeight: "normal",
-            triggerEvent: false, // label 호버 시 이벤트 발생 안 함
+            padding: [10, 15],
           },
+          tooltip: {
+            show: false,
+          },
+          z: 2,
         },
       ]
     : [];
@@ -555,11 +631,69 @@ function LineChart({
     },
     tooltip: {
       trigger: "item",
+      backgroundColor: "transparent",
+      borderColor: "transparent",
+      borderWidth: 0,
+      padding: 0,
+      extraCssText: "box-shadow: none;", // 기본 그림자 제거
+      position: (point: any, params: any, dom: any, rect: any, size: any) => {
+        if (!rect) {
+          return point;
+        }
+        const x = rect.x + rect.width / 2 - size.contentSize[0] / 2;
+        const y = rect.y - size.contentSize[1] - 12;
+        return [x, y];
+      },
       formatter: (params: any) => {
         if (params.seriesType === "scatter") {
-          const indicatorName = params.seriesName;
+          const indicatorName = params.seriesName.replace("_visible", "");
           const tooltipInfo = getTooltipInfo(indicatorName);
-          return `${indicatorName}<br/><br/>${tooltipInfo}`;
+
+          const titleHtml = `<div style="
+            font-size: 14px; 
+            font-weight: bold; 
+            margin-bottom: 8px; 
+            color: #1f489b;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;">
+            ${indicatorName}
+            <span style="font-size: 16px; cursor: pointer; color: #999; margin-left: 10px;">&times;</span>
+          </div>`;
+
+          const contentHtml = `<div style="font-size: 12px; color: #333; line-height: 1.5;">
+            ${tooltipInfo}
+          </div>`;
+
+          return `
+            <div style="position: relative; padding: 10px;">
+              <div style="
+                background: white;
+                padding: 15px 20px;
+                border-radius: 12px;
+                box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+                position: relative;
+                z-index: 10;
+              ">
+                ${titleHtml}
+                ${contentHtml}
+              </div>
+              
+              <div style="
+                position: absolute;
+                bottom: 4px;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 0;
+                height: 0;
+                border-left: 8px solid transparent;
+                border-right: 8px solid transparent;
+                border-top: 8px solid white;
+                z-index: 11;
+                filter: drop-shadow(0px 2px 1px rgba(0,0,0,0.05));
+              "></div>
+            </div>
+          `;
         }
         return "";
       },
