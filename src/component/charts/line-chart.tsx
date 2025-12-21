@@ -23,27 +23,28 @@ type LineChartProps = {
   capital?: number;
 };
 
+type TooltipItem = {
+  title: string;
+  content: string;
+  indicatorKey: string;
+};
+
 type TooltipState = {
   visible: boolean;
   x: number;
   y: number;
-  title: string;
-  content: string;
-  indicatorKey: string;
+  items: TooltipItem[];
 } | null;
 
-// 정규분포 밀도 함수 (표준 정규분포: μ=0, σ=1)
 function normalDistribution(x: number): number {
   return (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
 }
 
-// 평균 계산
 function mean(values: number[]): number {
   if (values.length === 0) return 0;
   return values.reduce((sum, val) => sum + val, 0) / values.length;
 }
 
-// 표준편차 계산
 function standardDeviation(values: number[]): number {
   if (values.length === 0) return 0;
   const m = mean(values);
@@ -52,7 +53,6 @@ function standardDeviation(values: number[]): number {
   return Math.sqrt(variance);
 }
 
-// Z-score 계산
 function zScore(value: number, mean: number, stdDev: number): number {
   if (stdDev === 0) return 0;
   return (value - mean) / stdDev;
@@ -82,7 +82,6 @@ function LineChart({
       };
     }
 
-    // Step 1: 각 블록체인별 5가지 점수 배열화
     const entryScores: number[] = [];
     const influenceScores: number[] = [];
     const networkScores: number[] = [];
@@ -98,7 +97,6 @@ function LineChart({
       profitScores.push(scores.rawProfitScore ?? 0);
     });
 
-    // Step 2: 각 점수 배열에서 평균과 표준편차 계산
     const stats = {
       entry: {
         mean: mean(entryScores),
@@ -122,7 +120,6 @@ function LineChart({
       },
     };
 
-    // Step 3 & 4: 선택한 블록체인의 Z-score 계산 및 방향 처리
     const selectedBlockchain = allBlockchains.find(
       (b) => b.name === selectedBlockchainName
     );
@@ -162,7 +159,6 @@ function LineChart({
       );
     }
 
-    // 각 지표별 Z-score (순서: 영향력, 진입장벽, 수익, 안정성, 개발 거버넌스)
     const indicatorZScores = {
       influence: influenceZ,
       entry: -entryZ,
@@ -171,7 +167,6 @@ function LineChart({
       govDev: govDevZ,
     };
 
-    // Step 5: 정규분포 데이터 가공 (x_range = [-3, +3])
     const xRange: number[] = [];
     const normalDistributionData: number[] = [];
     const step = 0.1;
@@ -494,18 +489,43 @@ function LineChart({
           params.seriesName
         ))
     ) {
-      const indicatorKey = params.seriesName.replace("_visible", "");
-      const content = getTooltipContentBody(indicatorKey);
+      const clickedXValue = params.data[0];
 
-      const titleMap: Record<string, string> = {
-        GovDev: "거버넌스/개발",
-        Entry: "진입장벽",
-        Network: "네트워크 난이도",
-        Profit: "수익성",
-        Influence: "영향력",
+      const VISUAL_OVERLAP_THRESHOLD = 0.3;
+
+      const keyMapping: Record<string, string> = {
+        influence: "Influence",
+        entry: "Entry",
+        profit: "Profit",
+        network: "Network",
+        govDev: "GovDev",
       };
 
-      const title = titleMap[indicatorKey] || indicatorKey;
+      const titleMap: Record<string, string> = {
+        govDev: "거버넌스/개발",
+        entry: "진입장벽",
+        network: "네트워크 난이도",
+        profit: "수익성",
+        influence: "영향력",
+      };
+
+      const overlappingKeys = Object.entries(indicatorZScores)
+        .filter(
+          ([_, score]) =>
+            Math.abs(score - clickedXValue) < VISUAL_OVERLAP_THRESHOLD
+        )
+        .map(([key]) => key);
+
+      const items: TooltipItem[] = overlappingKeys.map((key) => {
+        const upperKey = keyMapping[key];
+        return {
+          indicatorKey: key,
+          title: titleMap[key] || upperKey,
+          content: getTooltipContentBody(upperKey),
+        };
+      });
+
+      if (items.length === 0) return;
 
       const echartsInstance = chartRef.current?.getEchartsInstance();
       if (echartsInstance) {
@@ -519,9 +539,7 @@ function LineChart({
             visible: true,
             x: pointPixel[0],
             y: pointPixel[1],
-            title,
-            content,
-            indicatorKey,
+            items: items,
           });
         }
       }
@@ -556,43 +574,35 @@ function LineChart({
         >
           <div
             style={{
-              width:
-                tooltipData.indicatorKey === "Influence"
-                  ? "240px"
-                  : tooltipData.indicatorKey === "GovDev"
-                  ? "240px"
-                  : "200px",
+              width: "260px",
               background: "white",
-              padding: "15px 20px",
+              padding: "0",
               borderRadius: "12px",
               boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.15)",
               position: "relative",
+              overflow: "hidden",
             }}
           >
             <div
               style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                marginBottom: "8px",
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                zIndex: 10,
               }}
             >
-              <span
-                style={{ fontSize: "16px", fontWeight: 500, color: "#000" }}
-              >
-                {tooltipData.title}
-              </span>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setTooltipData(null);
                 }}
                 style={{
-                  background: "transparent",
+                  background: "rgba(255,255,255,0.8)",
                   border: "none",
                   cursor: "pointer",
                   color: "#999",
-                  padding: 0,
+                  padding: "4px",
+                  borderRadius: "50%",
                   display: "flex",
                   alignItems: "center",
                 }}
@@ -601,10 +611,41 @@ function LineChart({
               </button>
             </div>
 
-            <div
-              style={{ fontSize: "12px", color: "#333", lineHeight: "1.5" }}
-              dangerouslySetInnerHTML={{ __html: tooltipData.content }}
-            />
+            <div style={{ maxHeight: "300px", overflowY: "auto" }}>
+              {tooltipData.items.map((item, index) => (
+                <div
+                  key={item.indicatorKey}
+                  style={{
+                    padding: "15px 20px",
+                    borderBottom:
+                      index < tooltipData.items.length - 1
+                        ? "1px solid #f0f0f0"
+                        : "none",
+                    background: index % 2 === 0 ? "#fff" : "#fafafa",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "16px",
+                      fontWeight: 600,
+                      color: "#000",
+                      marginBottom: "8px",
+                      paddingRight: "20px",
+                    }}
+                  >
+                    {item.title}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "12px",
+                      color: "#333",
+                      lineHeight: "1.5",
+                    }}
+                    dangerouslySetInnerHTML={{ __html: item.content }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
 
           <div
