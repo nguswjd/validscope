@@ -111,7 +111,6 @@ export default function App() {
               key={selectedForPieChart}
               data={[
                 (() => {
-                  // allBlockchains 또는 selectedBlockchains에서 찾기
                   const selectedBlockchain =
                     allBlockchains.find(
                       (b) => b.name === selectedForPieChart

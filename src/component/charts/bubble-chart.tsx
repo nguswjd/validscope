@@ -281,7 +281,7 @@ export default function BubbleChart({
       const x = values[0];
       const y = values[1];
       const bubble = values[2];
-      const name = values[3]; // 블록체인 이름 추출
+      const name = values[3];
 
       setHintValues({
         x: originalX !== undefined ? originalX.toFixed(2) : x.toFixed(2),
@@ -292,14 +292,12 @@ export default function BubbleChart({
             : bubble.toFixed(2),
       });
 
-      // 부모에게 호버 정보 전달
       if (onHover) {
         onHover(name);
       }
     },
     mouseout: () => {
       setHintValues({ x: "0.00", y: "0.00", bubble: "0.00" });
-      // 부모에게 호버 종료 전달
       if (onHover) {
         onHover(null);
       }
