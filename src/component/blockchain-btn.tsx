@@ -61,11 +61,8 @@ const blockchainImages: Record<string, string> = {
 };
 
 type Scores = {
-  //진입장벽, 영향력
   marketBarriers: number;
-  //네트워크 난이도, 거버넌스 및 개발
   networkGovernance: number;
-  //수익성
   profitability: number;
 };
 

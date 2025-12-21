@@ -10,13 +10,13 @@ type Scores = {
   marketBarriers: number;
   networkGovernance: number;
   profitability: number;
-  rawMarketBarriers: number; // 원본 점수 (0~1) * 100
-  rawProfitability: number; // 원본 점수 (0~1) * 100
-  rawEntryScore: number; // Entry_score (0~1) * 100
-  rawInfluenceScore: number; // Influence_score (0~1) * 100
-  rawNetworkScore: number; // Network_score (0~1) * 100
-  rawGovDevScore: number; // GovDev_score (0~1) * 100
-  rawProfitScore: number; // Profit_score (0~1) * 100
+  rawMarketBarriers: number;
+  rawProfitability: number;
+  rawEntryScore: number;
+  rawInfluenceScore: number;
+  rawNetworkScore: number;
+  rawGovDevScore: number;
+  rawProfitScore: number;
 };
 
 type AsideProps = {
@@ -131,9 +131,7 @@ export default function Aside({
           const row = parseCsvToRow(text);
           if (!row) continue;
           results.push({ name: chain.name, data: row });
-        } catch (e) {
-          // 네트워크 에러 등은 무시하고 계속 진행
-        }
+        } catch (e) {}
       }
 
       setRawMetrics(results);
@@ -197,7 +195,6 @@ export default function Aside({
     const cat2NetworkGovdev = (networkScore + govdevScore) / 2;
     const cat3Profit = profitScore;
 
-    // 가중치 합이 100이 되도록 정규화 (비율 유지)
     const weightSum =
       weights.revenue + weights.stability + weights.marketBarriers;
     const normalizedWeightRevenue =
@@ -207,25 +204,23 @@ export default function Aside({
     const normalizedWeightMarketBarriers =
       weightSum > 0 ? (weights.marketBarriers / weightSum) * 100 : 33.33;
 
-    // 각 카테고리의 raw 점수(0~1)를 해당 가중치 비율만큼의 범위로 스케일링
     return {
       marketBarriers: cat1EntryInfluence * normalizedWeightMarketBarriers,
       networkGovernance: cat2NetworkGovdev * normalizedWeightStability,
       profitability: cat3Profit * normalizedWeightRevenue,
-      rawMarketBarriers: cat1EntryInfluence * 100, // 원본 점수를 0~100 범위로
-      rawProfitability: cat3Profit * 100, // 원본 점수를 0~100 범위로
-      rawEntryScore: entryScore * 100, // Entry_score (0~100)
-      rawInfluenceScore: influenceScore * 100, // Influence_score (0~100)
-      rawNetworkScore: networkScore * 100, // Network_score (0~100)
-      rawGovDevScore: govdevScore * 100, // GovDev_score (0~100)
-      rawProfitScore: profitScore * 100, // Profit_score (0~100)
+      rawMarketBarriers: cat1EntryInfluence * 100,
+      rawProfitability: cat3Profit * 100,
+      rawEntryScore: entryScore * 100,
+      rawInfluenceScore: influenceScore * 100,
+      rawNetworkScore: networkScore * 100,
+      rawGovDevScore: govdevScore * 100,
+      rawProfitScore: profitScore * 100,
     };
   };
 
   useEffect(() => {
     if (rawMetrics.length === 0) return;
 
-    // 초기 상태이거나 Search 버튼을 누르지 않았으면 이름 순서대로 정렬
     if (searchParams.isInitial) {
       const updated = rawMetrics
         .map(({ name }) => ({
@@ -250,7 +245,6 @@ export default function Aside({
       return;
     }
 
-    // Search 버튼을 눌렀으면 계산 후 정렬
     const updated = rawMetrics
       .map(({ name, data }) => ({
         name,
@@ -290,12 +284,10 @@ export default function Aside({
   };
 
   const handleSearch = () => {
-    // 자본 입력값 파싱 (콤마 제거 후 숫자 추출)
     const onlyNumber = inputValues.capital.replace(/[^\d]/g, "");
     let capital = onlyNumber ? parseInt(onlyNumber, 10) : 50;
     capital = Math.max(50, Math.min(2000, capital));
 
-    // 가중치 입력값 파싱 (0~100 범위로 제한)
     const revenue = Math.max(
       0,
       Math.min(100, parseInt(inputValues.revenue, 10) || 50)
@@ -319,7 +311,7 @@ export default function Aside({
       revenue,
       stability,
       marketBarriers,
-      isInitial: false, // Search 버튼을 눌렀으므로 초기 상태 아님
+      isInitial: false,
     });
     if (onCapitalChange) {
       onCapitalChange(capital);
@@ -539,7 +531,6 @@ export default function Aside({
             );
           }
 
-          // 가중치 합이 100이 되도록 정규화 (비율 유지)
           const weightSum =
             searchParams.revenue +
             searchParams.stability +
@@ -551,8 +542,6 @@ export default function Aside({
               ? (searchParams.marketBarriers / weightSum) * 100
               : 33.33;
 
-          // 가중치가 적용된 점수에서 원래 점수(100점 만점)로 역계산
-          // 원래 점수 = 가중치 적용 점수 / 정규화된 가중치 * 100
           const stability =
             (targetBlockchain.scores.networkGovernance /
               normalizedWeightStability) *
@@ -563,14 +552,11 @@ export default function Aside({
               normalizedWeightMarketBarriers) *
             100;
 
-          // APR 계산 (rawMetrics에서 가져옴)
           const targetRawMetric = rawMetrics.find((m) => m.name === activeName);
           const apr = targetRawMetric?.data["apr"] ?? 0;
 
-          // 수익 금액 계산: 자본(C) * APR
           const profitAmount = searchParams.capital * apr;
 
-          // 소수점 둘째 자리까지 반올림
           const roundedProfitAmount = Math.round(profitAmount * 100) / 100;
           const roundedStability = Math.round(stability * 100) / 100;
           const roundedMarketBarriers = Math.round(marketBarriers * 100) / 100;

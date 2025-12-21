@@ -2,11 +2,11 @@ import { useMemo } from "react";
 import ReactECharts from "echarts-for-react";
 
 type Scores = {
-  entryScore: number; // Entry_score (0~100)
-  influenceScore: number; // Influence_score (0~100)
-  networkScore: number; // Network_score (0~100)
-  govDevScore: number; // GovDev_score (0~100)
-  profitScore: number; // Profit_score (0~100)
+  entryScore: number;
+  influenceScore: number;
+  networkScore: number;
+  govDevScore: number;
+  profitScore: number;
 };
 
 type PieChartProps = {
@@ -58,7 +58,6 @@ export default function PieChart({ data }: PieChartProps) {
     const total = chartData.reduce((sum, item) => sum + item.value, 0);
     const isEmpty = total === 0;
 
-    // 5개 값의 합이 100%가 되도록 비율 계산
     const normalizedChartData = chartData.map((item) => ({
       ...item,
       normalizedValue: total > 0 ? (item.value / total) * 100 : 0,
