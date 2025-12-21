@@ -198,7 +198,7 @@ export default function BubbleChart({
     },
     grid: { left: 40, right: 40, top: 60, bottom: 40 },
     xAxis: {
-      name: "gevDovScore",
+      name: "거버넌스/개발",
       nameLocation: "center",
       nameGap: 10,
       nameTextStyle: { color: "#111111", fontSize: 10, fontWeight: 300 },
@@ -211,7 +211,7 @@ export default function BubbleChart({
       max: 100,
     },
     yAxis: {
-      name: "Health Score",
+      name: "건강도",
       nameLocation: "center",
       nameGap: 10,
       nameRotate: 90,
@@ -313,12 +313,9 @@ export default function BubbleChart({
         style={{ height: "320px", width: "100%" }}
       />
       <div className="grid grid-cols-3 mx-10 gap-3">
-        <BubbleChartHint label="X-axis : gevDov Score" value={hintValues.x} />
-        <BubbleChartHint label="Y-axis : Health Score" value={hintValues.y} />
-        <BubbleChartHint
-          label="Bubble Scale : Influence Score"
-          value={hintValues.bubble}
-        />
+        <BubbleChartHint label="X축 : 거버넌스/개발" value={hintValues.x} />
+        <BubbleChartHint label="Y축 : 건강도" value={hintValues.y} />
+        <BubbleChartHint label="버블 크기 : 영향력" value={hintValues.bubble} />
       </div>
     </div>
   );
