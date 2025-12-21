@@ -286,8 +286,9 @@ export default function Aside({
 
   const handleSearch = () => {
     const onlyNumber = inputValues.capital.replace(/[^\d]/g, "");
-    let capital = onlyNumber ? parseInt(onlyNumber, 10) : 50;
-    capital = Math.max(50, Math.min(2000, capital));
+    let capital = onlyNumber ? parseInt(onlyNumber, 10) : 5;
+
+    capital = Math.max(5, capital);
 
     const parseValue = (val: string) => (val === "" ? 33 : parseInt(val, 10));
 
@@ -337,7 +338,7 @@ export default function Aside({
           <p>자본</p>
           <div className="flex gap-2 w-full">
             <Input
-              placeholder="$50-$2,000 사이의 자본을 입력하세요."
+              placeholder="$5 이상의 자본을 입력하세요."
               value={inputValues.capital}
               onKeyDown={handleKeyDown}
               onChange={(e) => {
@@ -355,7 +356,7 @@ export default function Aside({
                 if (!onlyNumber) return;
 
                 let value = Number(onlyNumber);
-                value = Math.max(50, Math.min(2000, value));
+                value = Math.max(5, value);
 
                 setInputValues((prev) => ({
                   ...prev,
