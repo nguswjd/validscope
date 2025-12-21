@@ -204,11 +204,11 @@ function LineChart({
 
     let devActivityText = "";
     if (govTurnout * 100 >= 50) {
-      devActivityText = "🟢꾸준함";
+      devActivityText = "🟢 꾸준함";
     } else if (govTurnout * 100 >= 10) {
-      devActivityText = "🟡보통";
+      devActivityText = "🟡 보통";
     } else {
-      devActivityText = "🔴활동 없음";
+      devActivityText = "🔴 활동 없음";
     }
 
     const userShare =
@@ -226,41 +226,41 @@ function LineChart({
 
     if (cutoffNum > 0) {
       if (capitalNum > cutoffNum) {
-        cutoffText = "🟢가능";
+        cutoffText = "🟢 가능";
       } else if (capitalNum < cutoffNum) {
-        cutoffText = "🔴진입불가";
+        cutoffText = "🔴 진입불가";
       } else {
-        cutoffText = "🟡주의";
+        cutoffText = "🟡 주의";
       }
     }
 
     const missRatioPercent = missRatio * 100;
     let blockMissRatioStatus = "";
     if (missRatioPercent <= 1) {
-      blockMissRatioStatus = "🟢안정";
+      blockMissRatioStatus = "🟢 안정";
     } else if (missRatioPercent <= 5) {
-      blockMissRatioStatus = "🟡주의";
+      blockMissRatioStatus = "🟡 주의";
     } else {
-      blockMissRatioStatus = "🔴위험";
+      blockMissRatioStatus = "🔴 위험";
     }
 
     let hhiStatus = "";
     if (hhi < 0.1) {
-      hhiStatus = "🟢분산 양호";
+      hhiStatus = "🟢 분산 양호";
     } else if (hhi <= 0.18) {
-      hhiStatus = "🟡중간";
+      hhiStatus = "🟡 중간";
     } else {
-      hhiStatus = "🔴고집중";
+      hhiStatus = "🔴 고집중";
     }
 
     let uptimeStatus = "";
     if (uptime !== null && uptime !== undefined) {
       if (uptime >= 99) {
-        uptimeStatus = "🟢안정";
+        uptimeStatus = "🟢 안정";
       } else if (uptime >= 97) {
-        uptimeStatus = "🟡주의";
+        uptimeStatus = "🟡 주의";
       } else {
-        uptimeStatus = "🔴위험";
+        uptimeStatus = "🔴 위험";
       }
     }
 
@@ -268,52 +268,67 @@ function LineChart({
     if (activeAddressesTrend !== null && activeAddressesTrend !== undefined) {
       const trend = String(activeAddressesTrend).toLowerCase();
       if (trend === "increase" || trend === "stable") {
-        activeAddressesStatus = "🟢분산 양호";
+        activeAddressesStatus = "🟢 분산 양호";
       } else if (trend === "stable" || trend === "stagnant") {
-        activeAddressesStatus = "🟡주의";
+        activeAddressesStatus = "🟡 주의";
       } else if (trend === "decrease" || trend === "decline") {
-        activeAddressesStatus = "🔴위험";
+        activeAddressesStatus = "🔴 위험";
       }
     }
 
     const annualProfit = capital * apr;
 
+    const makeRow = (label: string, value: string | number) => {
+      return `<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+        <span style="color: #666; margin-right: 8px;">${label}</span>
+        <span style="font-weight: 500; color: #000; text-align: right;">${value}</span>
+      </div>`;
+    };
+
     let info = "";
 
     if (indicatorName === "Influence") {
-      info += `TotalStaked ${totalStaked.toLocaleString()}<br/>`;
+      info += makeRow("TotalStaked", totalStaked.toLocaleString());
       const userShareFormatted =
         userShare > 0 && userShare < 0.0001
           ? userShare.toFixed(6)
           : userShare.toFixed(4);
-      info += `Top-k ${(top10Share * 100).toFixed(
-        2
-      )}%/${userShareFormatted}%<br/>`;
-      info += `Nakamoto Coefficient 🛡${nakamoto33} validators<br/>`;
+      info += makeRow(
+        "Top-k",
+        `${(top10Share * 100).toFixed(2)}% / ${userShareFormatted}%`
+      );
+      info += makeRow("Nakamoto Coeff.", `🛡 ${nakamoto33} validators`);
       const votingPowerFormatted =
         votingPower > 0 && votingPower < 0.01
           ? votingPower.toFixed(6)
           : votingPower.toFixed(2);
-      info += `VotingPower 🔈${votingPowerFormatted}%`;
+      info += makeRow("VotingPower", `🔈 ${votingPowerFormatted}%`);
     } else if (indicatorName === "Entry") {
-      info += `Cutoff ${cutoffText}<br/>`;
-      info += `Active set size ${nact.toLocaleString()}/${nact.toLocaleString()}`;
+      info += makeRow("Cutoff", cutoffText);
+      info += makeRow(
+        "Active set size",
+        `${nact.toLocaleString()}/${nact.toLocaleString()}`
+      );
     } else if (indicatorName === "Profit") {
-      info += `연간 예상 수익 약 ${annualProfit.toLocaleString()} USD`;
+      info += makeRow(
+        "연간 예상 수익",
+        `약 ${annualProfit.toLocaleString()} USD`
+      );
     } else if (indicatorName === "Network") {
-      info += `Block Miss Ratio ${blockMissRatioStatus}<br/>`;
+      info += makeRow("Block Miss Ratio", blockMissRatioStatus);
       if (uptimeStatus) {
-        info += `Uptime ${uptimeStatus}<br/>`;
+        info += makeRow("Uptime", uptimeStatus);
       }
-      info += `HHI ${hhiStatus}<br/>`;
+      info += makeRow("HHI", hhiStatus);
       if (activeAddressesStatus) {
-        info += `Active Addresses ${activeAddressesStatus}`;
+        info += makeRow("Active Addresses", activeAddressesStatus);
       }
     } else if (indicatorName === "GovDev") {
-      info += `Governance Participation 🗳️${(govTurnout * 100).toFixed(
-        0
-      )}%<br/>`;
-      info += `개발자 활동 ${devActivityText}`;
+      info += makeRow(
+        "Governance Participation",
+        `🗳️ ${(govTurnout * 100).toFixed(0)}%`
+      );
+      info += makeRow("개발자 활동", devActivityText);
     }
 
     return info;
@@ -635,29 +650,51 @@ function LineChart({
       borderColor: "transparent",
       borderWidth: 0,
       padding: 0,
-      extraCssText: "box-shadow: none;", // 기본 그림자 제거
-      position: (point: any, params: any, dom: any, rect: any, size: any) => {
+      extraCssText: "box-shadow: none;",
+      position: (point: any, _params: any, _dom: any, rect: any, size: any) => {
         if (!rect) {
           return point;
         }
-        const x = rect.x + rect.width / 2 - size.contentSize[0] / 2;
-        const y = rect.y - size.contentSize[1] - 12;
+        const tooltipWidth = size.contentSize[0];
+        const tooltipHeight = size.contentSize[1];
+
+        const x = rect.x + rect.width / 2 - tooltipWidth / 2;
+        const y = rect.y - tooltipHeight;
+
         return [x, y];
       },
       formatter: (params: any) => {
         if (params.seriesType === "scatter") {
-          const indicatorName = params.seriesName.replace("_visible", "");
-          const tooltipInfo = getTooltipInfo(indicatorName);
+          const indicatorKey = params.seriesName.replace("_visible", "");
+
+          let dynamicWidth = "200px";
+          if (indicatorKey === "Influence") {
+            dynamicWidth = "240px";
+          } else if (indicatorKey === "GovDev") {
+            dynamicWidth = "220px";
+          }
+
+          const tooltipInfo = getTooltipInfo(indicatorKey);
+
+          const titleMap: Record<string, string> = {
+            GovDev: "거버넌스/개발",
+            Entry: "진입장벽",
+            Network: "네트워크 난이도",
+            Profit: "수익성",
+            Influence: "영향력",
+          };
+
+          const displayTitle = titleMap[indicatorKey] || indicatorKey;
 
           const titleHtml = `<div style="
-            font-size: 14px; 
-            font-weight: bold; 
+            font-size: 16px; 
+            font-weight: 500; 
             margin-bottom: 8px; 
-            color: #1f489b;
+            color: #000000;
             display: flex; 
             justify-content: space-between; 
             align-items: center;">
-            ${indicatorName}
+            ${displayTitle}
             <span style="font-size: 16px; cursor: pointer; color: #999; margin-left: 10px;">&times;</span>
           </div>`;
 
@@ -668,6 +705,7 @@ function LineChart({
           return `
             <div style="position: relative; padding: 10px;">
               <div style="
+                width: ${dynamicWidth};
                 background: white;
                 padding: 15px 20px;
                 border-radius: 12px;
