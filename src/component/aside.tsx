@@ -483,18 +483,21 @@ export default function Aside({
                 {NameDisplay}
                 <ProgressBar
                   value={0}
+                  max={searchParams.capital}
                   label="수익"
                   variant="dollar"
                   color="#77b4f0"
                 />
                 <ProgressBar
                   value={0}
+                  max={100}
                   label="안정성"
                   variant="score"
                   color="#4896ec"
                 />
                 <ProgressBar
                   value={0}
+                  max={100}
                   label="진입장벽"
                   variant="score"
                   color="#3776cb"
@@ -513,18 +516,21 @@ export default function Aside({
                 {NameDisplay}
                 <ProgressBar
                   value={0}
+                  max={searchParams.capital}
                   label="수익"
                   variant="dollar"
                   color="#77b4f0"
                 />
                 <ProgressBar
                   value={0}
+                  max={100}
                   label="안정성"
                   variant="score"
                   color="#4896ec"
                 />
                 <ProgressBar
                   value={0}
+                  max={100}
                   label="진입장벽"
                   variant="score"
                   color="#3776cb"
@@ -574,18 +580,21 @@ export default function Aside({
               {NameDisplay}
               <ProgressBar
                 value={roundedProfitAmount}
+                max={searchParams.capital}
                 label="수익"
                 variant="dollar"
                 color="#77b4f0"
               />
               <ProgressBar
                 value={roundedStability}
+                max={100}
                 label="안정성"
                 variant="score"
                 color="#4896ec"
               />
               <ProgressBar
                 value={roundedMarketBarriers}
+                max={100}
                 label="진입장벽"
                 variant="score"
                 color="#3776cb"

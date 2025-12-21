@@ -2,6 +2,7 @@ import React from "react";
 
 interface ProgressBarProps {
   value: number;
+  max?: number;
   height?: number;
   showLabel?: boolean;
   label?: React.ReactNode;
@@ -12,6 +13,7 @@ interface ProgressBarProps {
 
 export default function ProgressBar({
   value,
+  max = 100,
   height = 8,
   showLabel = true,
   label,
@@ -22,8 +24,10 @@ export default function ProgressBar({
   const displayValue =
     variant === "dollar"
       ? Math.max(0, value)
-      : Math.min(100, Math.max(0, value));
-  const barWidth = Math.min(100, Math.max(0, value));
+      : Math.min(max, Math.max(0, value));
+
+  const percentage = (value / max) * 100;
+  const barWidth = Math.min(100, Math.max(0, percentage));
 
   return (
     <div className={`w-full ${className}`}>
@@ -37,8 +41,9 @@ export default function ProgressBar({
             {label}
           </div>
           <span>
-            {variant === "dollar" && `$${displayValue.toFixed(2)}`}
+            {variant === "dollar" && `$${displayValue.toLocaleString()}`}
             {variant === "score" && `${displayValue.toFixed(2)}/100`}
+            {variant === "percent" && `${displayValue.toFixed(0)}%`}
           </span>
         </div>
       )}
