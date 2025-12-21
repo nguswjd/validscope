@@ -106,7 +106,9 @@ export default function App() {
           <Contents
             variant="twochart"
             label="Ratio between elements"
-            label2="Normal distribution table for [blockchain]"
+            label2={`Normal distribution table for ${
+              selectedForPieChart || "Blockchain"
+            }`}
             className="w-[40%]"
             description="당신이 선택한 가중치에 따른 점수의 비율이다."
             description2="각 지표별 상대 점수를 정규분표로 도식화하였다.
