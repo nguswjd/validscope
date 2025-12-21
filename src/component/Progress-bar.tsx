@@ -7,6 +7,7 @@ interface ProgressBarProps {
   label?: React.ReactNode;
   variant?: "percent" | "dollar" | "score";
   className?: string;
+  color?: string;
 }
 
 export default function ProgressBar({
@@ -16,6 +17,7 @@ export default function ProgressBar({
   label,
   variant = "percent",
   className = "",
+  color = "#5da4ef",
 }: ProgressBarProps) {
   const displayValue =
     variant === "dollar"
@@ -28,7 +30,10 @@ export default function ProgressBar({
       {showLabel && (
         <div className="mb-1 flex items-center justify-between text-xs text-black">
           <div className="flex gap-1 items-center">
-            <p className="w-1.5 h-1.5 bg-blue-2 rounded-full"></p>
+            <p
+              className="w-1.5 h-1.5 rounded-full"
+              style={{ backgroundColor: color }}
+            ></p>
             {label}
           </div>
           <span>
@@ -37,14 +42,16 @@ export default function ProgressBar({
           </span>
         </div>
       )}
-
       <div
         className="w-full rounded-full bg-gray-1 overflow-hidden"
         style={{ height }}
       >
         <div
-          className="h-full rounded-full bg-gradient-blue-2 transition-all duration-300"
-          style={{ width: `${barWidth}%` }}
+          className="h-full rounded-full transition-all duration-300"
+          style={{
+            width: `${barWidth}%`,
+            background: `linear-gradient(90deg, ${color} 0%, ${color}dd 100%)`,
+          }}
         />
       </div>
     </div>

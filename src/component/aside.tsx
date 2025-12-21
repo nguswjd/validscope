@@ -473,9 +473,24 @@ export default function Aside({
             return (
               <>
                 {NameDisplay}
-                <ProgressBar value={0} label="수익" variant="dollar" />
-                <ProgressBar value={0} label="안정성" variant="score" />
-                <ProgressBar value={0} label="진입장벽" variant="score" />
+                <ProgressBar
+                  value={0}
+                  label="수익"
+                  variant="dollar"
+                  color="#3776cb"
+                />
+                <ProgressBar
+                  value={0}
+                  label="안정성"
+                  variant="score"
+                  color="#4896ec"
+                />
+                <ProgressBar
+                  value={0}
+                  label="진입장벽"
+                  variant="score"
+                  color="#77b4f0"
+                />
               </>
             );
           }
@@ -488,9 +503,24 @@ export default function Aside({
             return (
               <>
                 {NameDisplay}
-                <ProgressBar value={0} label="수익" variant="dollar" />
-                <ProgressBar value={0} label="안정성" variant="score" />
-                <ProgressBar value={0} label="진입장벽" variant="score" />
+                <ProgressBar
+                  value={0}
+                  label="수익"
+                  variant="dollar"
+                  color="#3776cb"
+                />
+                <ProgressBar
+                  value={0}
+                  label="안정성"
+                  variant="score"
+                  color="#4896ec"
+                />
+                <ProgressBar
+                  value={0}
+                  label="진입장벽"
+                  variant="score"
+                  color="#77b4f0"
+                />
               </>
             );
           }
@@ -538,16 +568,19 @@ export default function Aside({
                 value={roundedProfitAmount}
                 label="수익"
                 variant="dollar"
+                color="#3776cb"
               />
               <ProgressBar
                 value={roundedStability}
                 label="안정성"
                 variant="score"
+                color="#4896ec"
               />
               <ProgressBar
                 value={roundedMarketBarriers}
                 label="진입장벽"
                 variant="score"
+                color="#77b4f0"
               />
             </>
           );
