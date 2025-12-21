@@ -46,6 +46,8 @@ export default function App() {
     null
   );
 
+  const [isSearched, setIsSearched] = useState(false);
+
   const handleSelectBlockchain = (name: string) => {
     const blockchain = selectedBlockchains.find((b) => b.name === name);
 
@@ -71,7 +73,10 @@ export default function App() {
         onSelect={setSelectedBlockchains}
         onAllBlockchainsLoad={setAllBlockchains}
         onRawMetricsLoad={setRawMetrics}
-        onCapitalChange={setCapital}
+        onCapitalChange={(cap) => {
+          setCapital(cap);
+          setIsSearched(true);
+        }}
         externalHoveredItem={hoveredBlockchain}
       />
       <main className="ml-111 flex flex-col gap-5 p-5">
@@ -145,15 +150,20 @@ export default function App() {
 
           <div className="absolute w-59 top-5 right-5 bg-white">
             <Select
+              disabled={!isSearched}
               value={selectedForPieChart}
               onValueChange={setSelectedForPieChart}
             >
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="w-full cursor-pointer">
                 <SelectValue placeholder="블록체인을 선택하세요" />
               </SelectTrigger>
               <SelectContent>
                 {allBlockchains.map((blockchain) => (
-                  <SelectItem key={blockchain.name} value={blockchain.name}>
+                  <SelectItem
+                    className="cursor-pointer"
+                    key={blockchain.name}
+                    value={blockchain.name}
+                  >
                     {blockchain.name}
                   </SelectItem>
                 ))}

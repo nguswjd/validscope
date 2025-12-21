@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import LogoImage from "../assets/logo.svg";
 
@@ -440,23 +441,39 @@ export default function Aside({
       <section className="flex-1 overflow-y-auto border-y-2 border-gray-2 p-4 hide-scrollbar">
         <nav>
           <ul className="flex flex-col gap-2">
-            {blockchains.map((item, idx) => (
-              <li
-                key={idx}
-                className="flex items-center"
-                onMouseEnter={() => setHoveredItem(item.name)}
-                onMouseLeave={() => setHoveredItem(null)}
-              >
-                <p className="w-5 text-center text-black mr-2">{idx + 1}</p>
-                <BlockchainBtn
-                  name={item.name}
-                  scores={item.scores}
-                  onClick={() => handleToggle(item.name)}
-                  isSelected={selected.includes(item.name)}
-                  selectedLength={selected.length}
-                />
-              </li>
-            ))}
+            <AnimatePresence>
+              {blockchains.map((item, idx) => (
+                <motion.li
+                  key={item.name}
+                  layout
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 30,
+                    damping: 15,
+                    mass: 1,
+                  }}
+                  className="flex items-center bg-white"
+                  onMouseEnter={() => {
+                    if (!searchParams.isInitial) {
+                      setHoveredItem(item.name);
+                    }
+                  }}
+                  onMouseLeave={() => setHoveredItem(null)}
+                >
+                  <p className="w-5 text-center text-black mr-2">{idx + 1}</p>
+                  <BlockchainBtn
+                    name={item.name}
+                    scores={item.scores}
+                    onClick={() => handleToggle(item.name)}
+                    isSelected={selected.includes(item.name)}
+                    selectedLength={selected.length}
+                  />
+                </motion.li>
+              ))}
+            </AnimatePresence>
           </ul>
         </nav>
       </section>
