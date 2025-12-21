@@ -170,7 +170,7 @@ export default function BubbleChart({
 
   const option = {
     title: {
-      text: "Select Bubble for more information",
+      text: "좌측 블록체인 바를 통하여 버블을 추가하세요.",
       left: "12px",
       top: "0",
       textStyle: {
