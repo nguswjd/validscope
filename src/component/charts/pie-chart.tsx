@@ -70,9 +70,9 @@ export default function PieChart({ data }: PieChartProps) {
         {
           name: data[0].name,
           type: "pie",
-          radius: ["40%", "70%"],
+          radius: ["35%", "80%"],
           avoidLabelOverlap: false,
-          itemStyle: { borderRadius: 10, borderColor: "#fff", borderWidth: 2 },
+          itemStyle: { borderRadius: 0, borderColor: "#fff", borderWidth: 2 },
           label: { show: false },
           emphasis: { label: { show: false } },
           labelLine: { show: false },
