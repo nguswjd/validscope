@@ -289,22 +289,24 @@ export default function Aside({
     let capital = onlyNumber ? parseInt(onlyNumber, 10) : 50;
     capital = Math.max(50, Math.min(2000, capital));
 
-    const revenue = Math.max(
-      0,
-      Math.min(100, parseInt(inputValues.revenue, 10) || 50)
-    );
+    const parseValue = (val: string) => (val === "" ? 33 : parseInt(val, 10));
+
+    const revenue = Math.max(0, Math.min(100, parseValue(inputValues.revenue)));
     const stability = Math.max(
       0,
-      Math.min(100, parseInt(inputValues.stability, 10) || 50)
+      Math.min(100, parseValue(inputValues.stability))
     );
     const marketBarriers = Math.max(
       0,
-      Math.min(100, parseInt(inputValues.marketBarriers, 10) || 50)
+      Math.min(100, parseValue(inputValues.marketBarriers))
     );
 
     setInputValues((prev) => ({
       ...prev,
       capital: capital.toLocaleString(),
+      revenue: String(revenue),
+      stability: String(stability),
+      marketBarriers: String(marketBarriers),
     }));
 
     setSearchParams({
