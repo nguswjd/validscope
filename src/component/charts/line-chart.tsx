@@ -560,7 +560,7 @@ function LineChart({
                 tooltipData.indicatorKey === "Influence"
                   ? "240px"
                   : tooltipData.indicatorKey === "GovDev"
-                  ? "220px"
+                  ? "240px"
                   : "200px",
               background: "white",
               padding: "15px 20px",
