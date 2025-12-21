@@ -577,7 +577,7 @@ function LineChart({
               width: tooltipData.items.some(
                 (item) => item.indicatorKey === "influence"
               )
-                ? "340px"
+                ? "360px"
                 : "260px",
               background: "white",
               padding: "0",
