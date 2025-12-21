@@ -477,7 +477,7 @@ export default function Aside({
                   value={0}
                   label="수익"
                   variant="dollar"
-                  color="#3776cb"
+                  color="#77b4f0"
                 />
                 <ProgressBar
                   value={0}
@@ -489,7 +489,7 @@ export default function Aside({
                   value={0}
                   label="진입장벽"
                   variant="score"
-                  color="#77b4f0"
+                  color="#3776cb"
                 />
               </>
             );
@@ -507,7 +507,7 @@ export default function Aside({
                   value={0}
                   label="수익"
                   variant="dollar"
-                  color="#3776cb"
+                  color="#77b4f0"
                 />
                 <ProgressBar
                   value={0}
@@ -519,7 +519,7 @@ export default function Aside({
                   value={0}
                   label="진입장벽"
                   variant="score"
-                  color="#77b4f0"
+                  color="#3776cb"
                 />
               </>
             );
@@ -568,7 +568,7 @@ export default function Aside({
                 value={roundedProfitAmount}
                 label="수익"
                 variant="dollar"
-                color="#3776cb"
+                color="#77b4f0"
               />
               <ProgressBar
                 value={roundedStability}
@@ -580,7 +580,7 @@ export default function Aside({
                 value={roundedMarketBarriers}
                 label="진입장벽"
                 variant="score"
-                color="#77b4f0"
+                color="#3776cb"
               />
             </>
           );
