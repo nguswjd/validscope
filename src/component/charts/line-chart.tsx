@@ -418,41 +418,41 @@ function LineChart({
   const dotSeries = hasSelectedBlockchain
     ? [
         ...createDotSeries(
-          "Influence",
+          "영향력",
           [
             indicatorZScores.influence,
             normalDistribution(indicatorZScores.influence),
           ],
-          "Influence"
+          "영향력"
         ),
         ...createDotSeries(
-          "Entry",
+          "진입장벽",
           [indicatorZScores.entry, normalDistribution(indicatorZScores.entry)],
-          "Entry"
+          "진입장벽"
         ),
         ...createDotSeries(
-          "Profit",
+          "수익성",
           [
             indicatorZScores.profit,
             normalDistribution(indicatorZScores.profit),
           ],
-          "Profit"
+          "수익성"
         ),
         ...createDotSeries(
-          "Network",
+          "네트워크 난이도",
           [
             indicatorZScores.network,
             normalDistribution(indicatorZScores.network),
           ],
-          "Network"
+          "네트워크 난이도"
         ),
         ...createDotSeries(
-          "GovDev",
+          "거버넌스/개발",
           [
             indicatorZScores.govDev,
             normalDistribution(indicatorZScores.govDev),
           ],
-          "GovDev"
+          "거버넌스/개발"
         ),
       ]
     : [];

@@ -29,27 +29,27 @@ export default function PieChart({ data }: PieChartProps) {
 
     const chartData = [
       {
-        name: "Entry_score",
+        name: "진입장벽",
         value: data[0].scores.entryScore,
         color: "#c2ddf8",
       },
       {
-        name: "Influence_score",
+        name: "영향력",
         value: data[0].scores.influenceScore,
         color: "#77b4f0",
       },
       {
-        name: "Network_score",
+        name: "네트워크 난이도",
         value: data[0].scores.networkScore,
         color: "#4896ec",
       },
       {
-        name: "GovDev_score",
+        name: "거버넌스 개발",
         value: data[0].scores.govDevScore,
         color: "#3776cb",
       },
       {
-        name: "Profit_score",
+        name: "수익성",
         value: data[0].scores.profitScore,
         color: "#1f489b",
       },
