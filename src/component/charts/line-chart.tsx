@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState, useRef } from "react";
 import ReactECharts from "echarts-for-react";
 import * as echarts from "echarts";
+import { X } from "lucide-react";
 
 type Scores = {
   marketBarriers: number;
@@ -21,6 +22,15 @@ type LineChartProps = {
   rawMetrics?: { name: string; data: Record<string, number> }[];
   capital?: number;
 };
+
+type TooltipState = {
+  visible: boolean;
+  x: number;
+  y: number;
+  title: string;
+  content: string;
+  indicatorKey: string;
+} | null;
 
 // 정규분포 밀도 함수 (표준 정규분포: μ=0, σ=1)
 function normalDistribution(x: number): number {
@@ -54,6 +64,9 @@ function LineChart({
   rawMetrics = [],
   capital = 50,
 }: LineChartProps) {
+  const chartRef = useRef<ReactECharts>(null);
+  const [tooltipData, setTooltipData] = useState<TooltipState>(null);
+
   const { normalDistributionData, indicatorZScores, xRange } = useMemo(() => {
     if (!allBlockchains || allBlockchains.length === 0) {
       return {
@@ -174,8 +187,6 @@ function LineChart({
     };
   }, [allBlockchains, selectedBlockchainName]);
 
-  if (!allBlockchains || allBlockchains.length === 0) return null;
-
   const hasSelectedBlockchain =
     selectedBlockchainName && selectedBlockchainName.trim() !== "";
 
@@ -186,7 +197,7 @@ function LineChart({
     (m) => m.name === selectedBlockchainName
   );
 
-  const getTooltipInfo = (indicatorName: string) => {
+  const getTooltipContentBody = (indicatorName: string) => {
     if (!selectedRawMetrics) return "";
 
     const metrics = selectedRawMetrics.data;
@@ -372,243 +383,82 @@ function LineChart({
     },
   };
 
+  const createDotSeries = (name: string, data: number[], label: string) => [
+    {
+      name: name,
+      type: "scatter",
+      data: [data],
+      symbolSize: 60,
+      itemStyle: { color: "transparent", borderColor: "transparent" },
+      z: 1,
+      cursor: "pointer",
+    },
+    {
+      name: `${name}_visible`,
+      type: "scatter",
+      data: [data],
+      symbolSize: 10,
+      itemStyle: {
+        color: "#ffffff",
+        borderColor: "#4896ec",
+        borderWidth: 2,
+        shadowBlur: 15,
+        shadowColor: "rgba(72, 150, 236, 0.5)",
+      },
+      label: {
+        show: true,
+        position: "top",
+        formatter: label,
+        fontSize: 10,
+        color: "#1f489b",
+        fontWeight: "normal",
+        padding: [10, 15],
+      },
+      tooltip: { show: false },
+      z: 2,
+      cursor: "pointer",
+    },
+  ];
+
   const dotSeries = hasSelectedBlockchain
     ? [
-        {
-          name: "Influence",
-          type: "scatter",
-          data: [
-            [
-              indicatorZScores.influence,
-              normalDistribution(indicatorZScores.influence),
-            ],
+        ...createDotSeries(
+          "Influence",
+          [
+            indicatorZScores.influence,
+            normalDistribution(indicatorZScores.influence),
           ],
-          symbolSize: 30,
-          itemStyle: {
-            color: "transparent",
-            borderColor: "transparent",
-          },
-          z: 1,
-        },
-        {
-          name: "Influence_visible",
-          type: "scatter",
-          data: [
-            [
-              indicatorZScores.influence,
-              normalDistribution(indicatorZScores.influence),
-            ],
+          "Influence"
+        ),
+        ...createDotSeries(
+          "Entry",
+          [indicatorZScores.entry, normalDistribution(indicatorZScores.entry)],
+          "Entry"
+        ),
+        ...createDotSeries(
+          "Profit",
+          [
+            indicatorZScores.profit,
+            normalDistribution(indicatorZScores.profit),
           ],
-          symbolSize: 10,
-          itemStyle: {
-            color: "#ffffff",
-            borderColor: "#4896ec",
-            borderWidth: 2,
-            shadowBlur: 15,
-            shadowColor: "rgba(72, 150, 236, 0.5)",
-          },
-          label: {
-            show: true,
-            position: "top",
-            formatter: "Influence",
-            fontSize: 10,
-            color: "#1f489b",
-            fontWeight: "normal",
-            padding: [10, 15],
-          },
-          tooltip: {
-            show: false,
-          },
-          z: 2,
-        },
-        {
-          name: "Entry",
-          type: "scatter",
-          data: [
-            [
-              indicatorZScores.entry,
-              normalDistribution(indicatorZScores.entry),
-            ],
+          "Profit"
+        ),
+        ...createDotSeries(
+          "Network",
+          [
+            indicatorZScores.network,
+            normalDistribution(indicatorZScores.network),
           ],
-          symbolSize: 30,
-          itemStyle: {
-            color: "transparent",
-            borderColor: "transparent",
-          },
-          z: 1,
-        },
-        {
-          name: "Entry_visible",
-          type: "scatter",
-          data: [
-            [
-              indicatorZScores.entry,
-              normalDistribution(indicatorZScores.entry),
-            ],
+          "Network"
+        ),
+        ...createDotSeries(
+          "GovDev",
+          [
+            indicatorZScores.govDev,
+            normalDistribution(indicatorZScores.govDev),
           ],
-          symbolSize: 10,
-          itemStyle: {
-            color: "#ffffff",
-            borderColor: "#4896ec",
-            borderWidth: 2,
-            shadowBlur: 15,
-            shadowColor: "rgba(72, 150, 236, 0.5)",
-          },
-          label: {
-            show: true,
-            position: "top",
-            formatter: "Entry",
-            fontSize: 10,
-            color: "#1f489b",
-            fontWeight: "normal",
-            padding: [10, 15],
-          },
-          tooltip: {
-            show: false,
-          },
-          z: 2,
-        },
-        {
-          name: "Profit",
-          type: "scatter",
-          data: [
-            [
-              indicatorZScores.profit,
-              normalDistribution(indicatorZScores.profit),
-            ],
-          ],
-          symbolSize: 30,
-          itemStyle: {
-            color: "transparent",
-            borderColor: "transparent",
-          },
-          z: 1,
-        },
-        {
-          name: "Profit_visible",
-          type: "scatter",
-          data: [
-            [
-              indicatorZScores.profit,
-              normalDistribution(indicatorZScores.profit),
-            ],
-          ],
-          symbolSize: 10,
-          itemStyle: {
-            color: "#ffffff",
-            borderColor: "#4896ec",
-            borderWidth: 2,
-            shadowBlur: 15,
-            shadowColor: "rgba(72, 150, 236, 0.5)",
-          },
-          label: {
-            show: true,
-            position: "top",
-            formatter: "Profit",
-            fontSize: 10,
-            color: "#1f489b",
-            fontWeight: "normal",
-            padding: [10, 15],
-          },
-          tooltip: {
-            show: false,
-          },
-          z: 2,
-        },
-        {
-          name: "Network",
-          type: "scatter",
-          data: [
-            [
-              indicatorZScores.network,
-              normalDistribution(indicatorZScores.network),
-            ],
-          ],
-          symbolSize: 30,
-          itemStyle: {
-            color: "transparent",
-            borderColor: "transparent",
-          },
-          z: 1,
-        },
-        {
-          name: "Network_visible",
-          type: "scatter",
-          data: [
-            [
-              indicatorZScores.network,
-              normalDistribution(indicatorZScores.network),
-            ],
-          ],
-          symbolSize: 10,
-          itemStyle: {
-            color: "#ffffff",
-            borderColor: "#4896ec",
-            borderWidth: 2,
-            shadowBlur: 15,
-            shadowColor: "rgba(72, 150, 236, 0.5)",
-          },
-          label: {
-            show: true,
-            position: "top",
-            formatter: "Network",
-            fontSize: 10,
-            color: "#1f489b",
-            fontWeight: "normal",
-            padding: [10, 15],
-          },
-          tooltip: {
-            show: false,
-          },
-          z: 2,
-        },
-        {
-          name: "GovDev",
-          type: "scatter",
-          data: [
-            [
-              indicatorZScores.govDev,
-              normalDistribution(indicatorZScores.govDev),
-            ],
-          ],
-          symbolSize: 30,
-          itemStyle: {
-            color: "transparent",
-            borderColor: "transparent",
-          },
-          z: 1,
-        },
-        {
-          name: "GovDev_visible",
-          type: "scatter",
-          data: [
-            [
-              indicatorZScores.govDev,
-              normalDistribution(indicatorZScores.govDev),
-            ],
-          ],
-          symbolSize: 10,
-          itemStyle: {
-            color: "#ffffff",
-            borderColor: "#4896ec",
-            borderWidth: 2,
-            shadowBlur: 15,
-            shadowColor: "rgba(72, 150, 236, 0.5)",
-          },
-          label: {
-            show: true,
-            position: "top",
-            formatter: "GovDev",
-            fontSize: 10,
-            color: "#1f489b",
-            fontWeight: "normal",
-            padding: [10, 15],
-          },
-          tooltip: {
-            show: false,
-          },
-          z: 2,
-        },
+          "GovDev"
+        ),
       ]
     : [];
 
@@ -618,134 +468,162 @@ function LineChart({
       type: "value",
       min: -3,
       max: 3,
-      name: "Z-score",
-      nameLocation: "middle",
-      nameGap: 30,
       axisLine: { show: false },
       axisTick: { show: false },
-      axisLabel: {
-        fontSize: 10,
-      },
-      splitLine: {
-        show: false,
-      },
+      axisLabel: { fontSize: 10 },
+      splitLine: { show: false },
     },
     yAxis: {
       type: "value",
-      name: "Density",
-      nameLocation: "middle",
-      nameGap: 40,
       axisLine: { show: false },
       axisTick: { show: false },
-      axisLabel: {
-        fontSize: 10,
-      },
-      splitLine: {
-        show: false,
-      },
+      axisLabel: { fontSize: 10 },
+      splitLine: { show: false },
     },
-    tooltip: {
-      trigger: "item",
-      backgroundColor: "transparent",
-      borderColor: "transparent",
-      borderWidth: 0,
-      padding: 0,
-      extraCssText: "box-shadow: none;",
-      position: (point: any, _params: any, _dom: any, rect: any, size: any) => {
-        if (!rect) {
-          return point;
-        }
-        const tooltipWidth = size.contentSize[0];
-        const tooltipHeight = size.contentSize[1];
-
-        const x = rect.x + rect.width / 2 - tooltipWidth / 2;
-        const y = rect.y - tooltipHeight;
-
-        return [x, y];
-      },
-      formatter: (params: any) => {
-        if (params.seriesType === "scatter") {
-          const indicatorKey = params.seriesName.replace("_visible", "");
-
-          let dynamicWidth = "200px";
-          if (indicatorKey === "Influence") {
-            dynamicWidth = "240px";
-          } else if (indicatorKey === "GovDev") {
-            dynamicWidth = "220px";
-          }
-
-          const tooltipInfo = getTooltipInfo(indicatorKey);
-
-          const titleMap: Record<string, string> = {
-            GovDev: "거버넌스/개발",
-            Entry: "진입장벽",
-            Network: "네트워크 난이도",
-            Profit: "수익성",
-            Influence: "영향력",
-          };
-
-          const displayTitle = titleMap[indicatorKey] || indicatorKey;
-
-          const titleHtml = `<div style="
-            font-size: 16px; 
-            font-weight: 500; 
-            margin-bottom: 8px; 
-            color: #000000;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;">
-            ${displayTitle}
-            <span style="font-size: 16px; cursor: pointer; color: #999; margin-left: 10px;">&times;</span>
-          </div>`;
-
-          const contentHtml = `<div style="font-size: 12px; color: #333; line-height: 1.5;">
-            ${tooltipInfo}
-          </div>`;
-
-          return `
-            <div style="position: relative; padding: 10px;">
-              <div style="
-                width: ${dynamicWidth};
-                background: white;
-                padding: 15px 20px;
-                border-radius: 12px;
-                box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
-                position: relative;
-                z-index: 10;
-              ">
-                ${titleHtml}
-                ${contentHtml}
-              </div>
-              
-              <div style="
-                position: absolute;
-                bottom: 4px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 0;
-                height: 0;
-                border-left: 8px solid transparent;
-                border-right: 8px solid transparent;
-                border-top: 8px solid white;
-                z-index: 11;
-                filter: drop-shadow(0px 2px 1px rgba(0,0,0,0.05));
-              "></div>
-            </div>
-          `;
-        }
-        return "";
-      },
-    },
+    tooltip: { show: false },
     legend: { show: false },
     series: [distributionSeries, ...dotSeries],
   };
 
+  const handleChartClick = (params: any) => {
+    if (
+      params.componentType === "series" &&
+      params.seriesType === "scatter" &&
+      (params.seriesName.endsWith("_visible") ||
+        ["Influence", "Entry", "Profit", "Network", "GovDev"].includes(
+          params.seriesName
+        ))
+    ) {
+      const indicatorKey = params.seriesName.replace("_visible", "");
+      const content = getTooltipContentBody(indicatorKey);
+
+      const titleMap: Record<string, string> = {
+        GovDev: "거버넌스/개발",
+        Entry: "진입장벽",
+        Network: "네트워크 난이도",
+        Profit: "수익성",
+        Influence: "영향력",
+      };
+
+      const title = titleMap[indicatorKey] || indicatorKey;
+
+      const echartsInstance = chartRef.current?.getEchartsInstance();
+      if (echartsInstance) {
+        const pointPixel = echartsInstance.convertToPixel(
+          { seriesIndex: params.seriesIndex },
+          params.data
+        ) as unknown as [number, number];
+
+        if (pointPixel) {
+          setTooltipData({
+            visible: true,
+            x: pointPixel[0],
+            y: pointPixel[1],
+            title,
+            content,
+            indicatorKey,
+          });
+        }
+      }
+    }
+  };
+
+  if (!allBlockchains || allBlockchains.length === 0) return null;
+
   return (
-    <ReactECharts
-      echarts={echarts}
-      option={option}
-      style={{ width: "100%", height: "100%" }}
-    />
+    <div style={{ position: "relative", width: "100%", height: "100%" }}>
+      <ReactECharts
+        ref={chartRef}
+        echarts={echarts}
+        option={option}
+        style={{ width: "100%", height: "100%" }}
+        onEvents={{
+          click: handleChartClick,
+        }}
+      />
+
+      {tooltipData && tooltipData.visible && (
+        <div
+          style={{
+            position: "absolute",
+            left: tooltipData.x,
+            top: tooltipData.y,
+            transform: "translate(-50%, -100%)",
+            marginTop: "-15px",
+            zIndex: 100,
+            pointerEvents: "auto",
+          }}
+        >
+          <div
+            style={{
+              width:
+                tooltipData.indicatorKey === "Influence"
+                  ? "240px"
+                  : tooltipData.indicatorKey === "GovDev"
+                  ? "220px"
+                  : "200px",
+              background: "white",
+              padding: "15px 20px",
+              borderRadius: "12px",
+              boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.15)",
+              position: "relative",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "8px",
+              }}
+            >
+              <span
+                style={{ fontSize: "16px", fontWeight: 500, color: "#000" }}
+              >
+                {tooltipData.title}
+              </span>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setTooltipData(null);
+                }}
+                style={{
+                  background: "transparent",
+                  border: "none",
+                  cursor: "pointer",
+                  color: "#999",
+                  padding: 0,
+                  display: "flex",
+                  alignItems: "center",
+                }}
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div
+              style={{ fontSize: "12px", color: "#333", lineHeight: "1.5" }}
+              dangerouslySetInnerHTML={{ __html: tooltipData.content }}
+            />
+          </div>
+
+          <div
+            style={{
+              position: "absolute",
+              bottom: "-8px",
+              left: "50%",
+              transform: "translateX(-50%)",
+              width: 0,
+              height: 0,
+              borderLeft: "8px solid transparent",
+              borderRight: "8px solid transparent",
+              borderTop: "8px solid white",
+              filter: "drop-shadow(0px 2px 1px rgba(0,0,0,0.05))",
+            }}
+          />
+        </div>
+      )}
+    </div>
   );
 }
 
