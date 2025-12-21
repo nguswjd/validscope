@@ -79,7 +79,7 @@ export default function App() {
         }}
         externalHoveredItem={hoveredBlockchain}
       />
-      <main className="ml-111 flex flex-col gap-5 p-5">
+      <main className="ml-111 flex flex-col gap-5 p-5 pb-10">
         <div className="flex h-110 gap-5">
           <Contents
             label="Bubble chart for blockchains"
