@@ -76,6 +76,7 @@ type BubbleChartProps = {
   data: { name: string; scores: Scores }[];
   onSelectBlockchain: (name: string) => void;
   selectedBlockchains: { name: string; scores: Scores }[];
+  onHover: (name: string | null) => void;
 };
 
 type BubbleChartHintProps = {
@@ -96,6 +97,7 @@ export default function BubbleChart({
   data,
   onSelectBlockchain,
   selectedBlockchains,
+  onHover,
 }: BubbleChartProps) {
   const colors = ["#5da4ef", "#64b875", "#785bbc", "#f24949"];
 
@@ -178,7 +180,21 @@ export default function BubbleChart({
       },
     },
     tooltip: {
-      show: false,
+      show: true,
+      trigger: "item",
+      position: "top",
+      confine: true,
+      formatter: (params: any) => params.data.value[3],
+      backgroundColor: "#ffffff",
+      padding: [4, 8],
+      borderRadius: 4,
+      textStyle: {
+        color: "#111111",
+        fontSize: 12,
+        fontWeight: 400,
+      },
+      borderWidth: 0,
+      extraCssText: "box-shadow: none; z-index: 100;",
     },
     grid: { left: 40, right: 40, top: 60, bottom: 40 },
     xAxis: {
@@ -240,21 +256,10 @@ export default function BubbleChart({
         symbolSize: (d: any[]) => Math.sqrt(d[2]) * 1.5 * 0.7,
         label: {
           show: false,
-          formatter: (params: any) => params.data.value[3],
-          position: "top",
-          color: "#111111",
-          fontSize: 12,
-          fontWeight: 400,
-          backgroundColor: "#ffffff",
-          padding: [4, 8],
-          borderRadius: 4,
         },
         emphasis: {
           scale: true,
           focus: "series",
-          label: {
-            show: true,
-          },
         },
         z: 2,
       },
@@ -276,6 +281,7 @@ export default function BubbleChart({
       const x = values[0];
       const y = values[1];
       const bubble = values[2];
+      const name = values[3]; // 블록체인 이름 추출
 
       setHintValues({
         x: originalX !== undefined ? originalX.toFixed(2) : x.toFixed(2),
@@ -285,9 +291,18 @@ export default function BubbleChart({
             ? originalBubble.toFixed(2)
             : bubble.toFixed(2),
       });
+
+      // 부모에게 호버 정보 전달
+      if (onHover) {
+        onHover(name);
+      }
     },
     mouseout: () => {
       setHintValues({ x: "0.00", y: "0.00", bubble: "0.00" });
+      // 부모에게 호버 종료 전달
+      if (onHover) {
+        onHover(null);
+      }
     },
   };
 

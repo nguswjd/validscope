@@ -22,11 +22,20 @@ type Scores = {
 type AsideProps = {
   onSelect: (selected: { name: string; scores: Scores }[]) => void;
   onAllBlockchainsLoad: (all: { name: string; scores: Scores }[]) => void;
-  onRawMetricsLoad?: (rawMetrics: { name: string; data: Record<string, number> }[]) => void;
+  onRawMetricsLoad?: (
+    rawMetrics: { name: string; data: Record<string, number> }[]
+  ) => void;
   onCapitalChange?: (capital: number) => void;
+  externalHoveredItem?: string | null;
 };
 
-export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad, onCapitalChange }: AsideProps) {
+export default function Aside({
+  onSelect,
+  onAllBlockchainsLoad,
+  onRawMetricsLoad,
+  onCapitalChange,
+  externalHoveredItem,
+}: AsideProps) {
   const [rawMetrics, setRawMetrics] = useState<
     { name: string; data: Record<string, number> }[]
   >([]);
@@ -268,6 +277,11 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
   }, [rawMetrics, searchParams, onAllBlockchainsLoad]);
 
   const handleToggle = (name: string) => {
+    if (searchParams.isInitial) {
+      alert("자본을 입력하고 Search 버튼을 눌러주세요.");
+      return;
+    }
+
     const newSelected = selected.includes(name)
       ? selected.filter((n) => n !== name)
       : [...selected, name];
@@ -278,7 +292,8 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
   const handleSearch = () => {
     // 자본 입력값 파싱 (콤마 제거 후 숫자 추출)
     const onlyNumber = inputValues.capital.replace(/[^\d]/g, "");
-    const capital = onlyNumber ? parseInt(onlyNumber, 10) : 50;
+    let capital = onlyNumber ? parseInt(onlyNumber, 10) : 50;
+    capital = Math.max(50, Math.min(2000, capital));
 
     // 가중치 입력값 파싱 (0~100 범위로 제한)
     const revenue = Math.max(
@@ -293,6 +308,11 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
       0,
       Math.min(100, parseInt(inputValues.marketBarriers, 10) || 50)
     );
+
+    setInputValues((prev) => ({
+      ...prev,
+      capital: capital.toLocaleString(),
+    }));
 
     setSearchParams({
       capital,
@@ -451,6 +471,7 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
       <footer className="bg-white p-5 flex flex-col gap-4">
         {(() => {
           const activeName =
+            externalHoveredItem ||
             hoveredItem ||
             (selected.length > 0 ? selected[selected.length - 1] : null);
 
@@ -460,9 +481,24 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
             return (
               <>
                 {NameDisplay}
-                <ProgressBar value={0} label="수익" variant="dollar" />
-                <ProgressBar value={0} label="안정성" variant="score" />
-                <ProgressBar value={0} label="진입장벽" variant="score" />
+                <ProgressBar
+                  value={0}
+                  label="수익"
+                  variant="dollar"
+                  color="#77b4f0"
+                />
+                <ProgressBar
+                  value={0}
+                  label="안정성"
+                  variant="score"
+                  color="#4896ec"
+                />
+                <ProgressBar
+                  value={0}
+                  label="진입장벽"
+                  variant="score"
+                  color="#3776cb"
+                />
               </>
             );
           }
@@ -475,9 +511,24 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
             return (
               <>
                 {NameDisplay}
-                <ProgressBar value={0} label="수익" variant="dollar" />
-                <ProgressBar value={0} label="안정성" variant="score" />
-                <ProgressBar value={0} label="진입장벽" variant="score" />
+                <ProgressBar
+                  value={0}
+                  label="수익"
+                  variant="dollar"
+                  color="#77b4f0"
+                />
+                <ProgressBar
+                  value={0}
+                  label="안정성"
+                  variant="score"
+                  color="#4896ec"
+                />
+                <ProgressBar
+                  value={0}
+                  label="진입장벽"
+                  variant="score"
+                  color="#3776cb"
+                />
               </>
             );
           }
@@ -523,18 +574,21 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
               {NameDisplay}
               <ProgressBar
                 value={roundedProfitAmount}
-            label="수익"
+                label="수익"
                 variant="dollar"
+                color="#77b4f0"
               />
               <ProgressBar
                 value={roundedStability}
-            label="안정성"
+                label="안정성"
                 variant="score"
+                color="#4896ec"
               />
               <ProgressBar
                 value={roundedMarketBarriers}
-            label="진입장벽"
+                label="진입장벽"
                 variant="score"
+                color="#3776cb"
               />
             </>
           );
