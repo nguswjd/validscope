@@ -277,6 +277,11 @@ export default function Aside({
   }, [rawMetrics, searchParams, onAllBlockchainsLoad]);
 
   const handleToggle = (name: string) => {
+    if (searchParams.isInitial) {
+      alert("자본을 입력하고 Search 버튼을 눌러주세요.");
+      return;
+    }
+
     const newSelected = selected.includes(name)
       ? selected.filter((n) => n !== name)
       : [...selected, name];
