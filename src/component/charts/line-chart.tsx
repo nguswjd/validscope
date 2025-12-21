@@ -300,7 +300,7 @@ function LineChart({
           ? userShare.toFixed(6)
           : userShare.toFixed(4);
       info += makeRow(
-        "Top-k",
+        "Top-k enter<br/>(k번째 현황/사용자 진입시 순위)",
         `${(top10Share * 100).toFixed(2)}% / ${userShareFormatted}%`
       );
       info += makeRow("Nakamoto Coeff.", `🛡 ${nakamoto33} validators`);
@@ -574,7 +574,11 @@ function LineChart({
         >
           <div
             style={{
-              width: "260px",
+              width: tooltipData.items.some(
+                (item) => item.indicatorKey === "influence"
+              )
+                ? "340px"
+                : "260px",
               background: "white",
               padding: "0",
               borderRadius: "12px",
