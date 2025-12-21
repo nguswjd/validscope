@@ -22,11 +22,18 @@ type Scores = {
 type AsideProps = {
   onSelect: (selected: { name: string; scores: Scores }[]) => void;
   onAllBlockchainsLoad: (all: { name: string; scores: Scores }[]) => void;
-  onRawMetricsLoad?: (rawMetrics: { name: string; data: Record<string, number> }[]) => void;
+  onRawMetricsLoad?: (
+    rawMetrics: { name: string; data: Record<string, number> }[]
+  ) => void;
   onCapitalChange?: (capital: number) => void;
 };
 
-export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad, onCapitalChange }: AsideProps) {
+export default function Aside({
+  onSelect,
+  onAllBlockchainsLoad,
+  onRawMetricsLoad,
+  onCapitalChange,
+}: AsideProps) {
   const [rawMetrics, setRawMetrics] = useState<
     { name: string; data: Record<string, number> }[]
   >([]);
@@ -278,7 +285,8 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
   const handleSearch = () => {
     // 자본 입력값 파싱 (콤마 제거 후 숫자 추출)
     const onlyNumber = inputValues.capital.replace(/[^\d]/g, "");
-    const capital = onlyNumber ? parseInt(onlyNumber, 10) : 50;
+    let capital = onlyNumber ? parseInt(onlyNumber, 10) : 50;
+    capital = Math.max(50, Math.min(2000, capital));
 
     // 가중치 입력값 파싱 (0~100 범위로 제한)
     const revenue = Math.max(
@@ -293,6 +301,11 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
       0,
       Math.min(100, parseInt(inputValues.marketBarriers, 10) || 50)
     );
+
+    setInputValues((prev) => ({
+      ...prev,
+      capital: capital.toLocaleString(),
+    }));
 
     setSearchParams({
       capital,
@@ -523,17 +536,17 @@ export default function Aside({ onSelect, onAllBlockchainsLoad, onRawMetricsLoad
               {NameDisplay}
               <ProgressBar
                 value={roundedProfitAmount}
-            label="수익"
+                label="수익"
                 variant="dollar"
               />
               <ProgressBar
                 value={roundedStability}
-            label="안정성"
+                label="안정성"
                 variant="score"
               />
               <ProgressBar
                 value={roundedMarketBarriers}
-            label="진입장벽"
+                label="진입장벽"
                 variant="score"
               />
             </>
