@@ -115,6 +115,11 @@ export default function BubbleChart({
   const maxY = Math.max(...yValues);
   const rangeY = maxY - minY || 1;
 
+  const governanceValues = data.map((b) => b.scores.networkGovernance);
+  const minGov = Math.min(...governanceValues);
+  const maxGov = Math.max(...governanceValues);
+  const rangeGov = maxGov - minGov || 1;
+
   const chartData = data.map((b) => {
     const selectedIndex = selectedBlockchains.findIndex(
       (selected) => selected.name === b.name
@@ -140,8 +145,8 @@ export default function BubbleChart({
     const xValue = ((xRaw - minX) / rangeX) * 100;
     const yValue = ((yRaw - minY) / rangeY) * 100;
 
-    const bubbleSize = b.scores.networkGovernance * 100;
     const bubbleOriginalValue = b.scores.networkGovernance;
+    const bubbleSize = ((bubbleOriginalValue - minGov) / rangeGov) * 60 + 30;
 
     const imgSrc = blockchainImages[b.name];
 
@@ -238,7 +243,7 @@ export default function BubbleChart({
           },
         })),
         symbol: "circle",
-        symbolSize: (d: any[]) => Math.sqrt(d[2]) * 1.5,
+        symbolSize: (d: any[]) => d[2],
         label: { show: false },
         z: 1,
         animation: true,
@@ -253,7 +258,7 @@ export default function BubbleChart({
             opacity: d.value[5],
           },
         })),
-        symbolSize: (d: any[]) => Math.sqrt(d[2]) * 1.5 * 0.7,
+        symbolSize: (d: any[]) => d[2] * 0.7,
         label: {
           show: false,
         },
