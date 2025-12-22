@@ -366,7 +366,7 @@ export default function Aside({
             />
             <button
               onClick={handleSearch}
-              className="bg-blue-6 px-3 py-3.5 rounded-md text-sm text-white"
+              className="bg-blue-6 px-3 py-3.5 rounded-md cursor-pointer text-sm text-white"
             >
               Search
             </button>
